@@ -1,0 +1,52 @@
+/*
+ * Copyright 2022 Pavel Kastornyy.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package pk.ansi4j.css.api;
+
+import java.util.List;
+import java.util.Map;
+import javax.annotation.concurrent.ThreadSafe;
+import pk.ansi4j.core.api.FunctionFragment;
+import pk.ansi4j.core.api.function.Function;
+
+/**
+ *
+ * @author Pavel Kastornyy
+ */
+@ThreadSafe
+public interface CssFunctionProcessor {
+
+    /**
+     * Returns resolvers by function in unmodifiable map.
+     *
+     * @return
+     */
+    Map<Function, AttributeResolver> getAttributeResolversByFunction();
+
+    /**
+     * Returns generators by attribute class in unmodifiable map.
+     * @return
+     */
+    Map<Class<? extends Attribute>, AttributeCssGenerator> getCssGeneratorsByAttributeClass();
+
+    /**
+     * Processes function fragment, context and return CSS declarations.
+     *
+     * @param functionFragment
+     * @param context
+     * @return declarations or empty list.
+     */
+    List<String> process(FunctionFragment functionFragment, AttributeContext context);
+}

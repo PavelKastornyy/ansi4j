@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pk.ansi4j</groupId>
+    <artifactId>ansi4j</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>ANSI4J</name>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0, January 2004</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <module>ansi4j-core-api</module>
+        <module>ansi4j-core-impl</module>
+        <module>ansi4j-core-it</module>
+        <module>ansi4j-css-api</module>
+        <module>ansi4j-css-impl</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!--### ANSI4J ###-->
+            <dependency>
+                <groupId>pk.ansi4j</groupId>
+                <artifactId>ansi4j-core-api</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pk.ansi4j</groupId>
+                <artifactId>ansi4j-core-impl</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>pk.ansi4j</groupId>
+                <artifactId>ansi4j-css-api</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>            
+            
+            <!--### COMMON ###-->
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            
+            <!--### LOGGING ###-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.8.0-beta4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.8.0-beta4</version>
+            </dependency>
+
+            <!--### TESTING ###-->
+            <dependency>
+               <groupId>org.junit.jupiter</groupId>
+               <artifactId>junit-jupiter-api</artifactId>
+               <version>5.8.2</version>
+               <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>5.8.2</version>
+                <scope>test</scope>
+            </dependency>            
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
+	    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+

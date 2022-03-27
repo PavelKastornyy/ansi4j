@@ -1,0 +1,12 @@
+/ansi4j-core-api/nbproject/
+/ansi4j-core-api/target/
+/ansi4j-core-impl/nbproject/
+/ansi4j-core-impl/target/
+/ansi4j-core-it/nbproject/
+/ansi4j-core-it/target/
+/target/
+nb-configuration.xml
+nbactions.xml
+
+/ansi4j-css-api/target/
+/ansi4j-css-impl/target/
