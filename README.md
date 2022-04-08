@@ -54,6 +54,7 @@ Base components:
 * Configuration that contains all settings for parser factory and other elements.
 * ParserFactory is thread-safe instance of factory, that can be used for creating N parsers for parsing N texts.
 So, usually there is only one factory.
+* FunctionFinder finds function in text and resolves found function.
 * Parsers. There are three types of parsers:
     * Parser (created via factory) is a non thread-safe front-end for TextParser and FunctionParser. One parser is 
 created for every text. Parser is very light, so it is possible to create it for every text line.    
@@ -101,7 +102,9 @@ separate function parser exists. As a result FunctionParser returns FunctionFrag
             ...
         } else if (fragment.getType() == FragmentType.FUNCTION) {
             FunctionFragment functionFragment = (FunctionFragment) fragment;
-            ....
+            if (functionFragment.getFunction() == ControlSequenceFunction.SGR_SELECT_GRAPHIC_RENDITION) {
+                ...
+            }
         }
         
     }
@@ -310,4 +313,3 @@ Note: spaces near parameters are not used in real function code.
 * [ISO/IEC 6429:1992 - preview](https://www.iso.org/obp/ui/#iso:std:iso-iec:6429:ed-3:v1:en)
 * [ANSI-X3.64](http://www.noah.org/python/pexpect/ANSI-X3.64.htm)
 * [XTerm Control Sequences](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html)
-* [XTERM.JS Supported Terminal Sequences](https://xtermjs.org/docs/api/vtfeatures/)
