@@ -193,9 +193,13 @@ was styled this way in JavaFX (RichTextFX):
 
 ## Code building <a name="ansi4j-building"></a>
 
-To build library use standard Maven command in project root folder:
+To build the library use standard Git and Maven commands:
 
+    git clone https://github.com/PavelKastornyy/ansi4j.git
+    cd ansi4j
     mvn clean install
+    
+Don't forget to star the project!
 
 ## License <a name="ansi4j-license"></a>
 
@@ -203,8 +207,8 @@ ANSI4J is under the Apache License, Version 2.0, January 2004.
 
 ## Feedback <a name="ansi4j-feedback"></a>
 
-We will be very thankful for any feedback. Besides, we would like to know for what cases this project is used.
-It will help us to understand the way we should go and provide more information in documentation.
+Any feedback is welcome. Besides, it would be interesting to know for what cases this project is used.
+It will help to understand the way the project should go and provide more information in documentation.
 
 # Theory <a name="theory"></a>
 
