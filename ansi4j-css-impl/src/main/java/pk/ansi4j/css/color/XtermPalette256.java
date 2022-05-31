@@ -15,9 +15,7 @@
  */
 package pk.ansi4j.css.color;
 
-import pk.ansi4j.css.api.color.Palette16;
 import pk.ansi4j.css.api.color.Palette256;
-import pk.ansi4j.css.api.color.Palette8;
 
 /**
  *
@@ -62,11 +60,13 @@ public class XtermPalette256 implements Palette256 {
 
     };
 
+    private int[] colors = COLORS.clone();
+
     /**
      * {@inheritDoc}
      */
     @Override
     public int[] getColors() {
-        return COLORS;
+        return colors;
     }
 }

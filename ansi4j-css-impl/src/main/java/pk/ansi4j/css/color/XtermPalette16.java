@@ -16,7 +16,6 @@
 package pk.ansi4j.css.color;
 
 import pk.ansi4j.css.api.color.Palette16;
-import pk.ansi4j.css.api.color.Palette8;
 
 /**
  * See https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
@@ -32,12 +31,14 @@ public class XtermPalette16 implements Palette16 {
 
     };
 
+    private int[] colors = COLORS.clone();
+
     /**
      * {@inheritDoc}
      */
     @Override
     public int[] getColors() {
-        return COLORS;
+        return colors;
     }
 
 }
