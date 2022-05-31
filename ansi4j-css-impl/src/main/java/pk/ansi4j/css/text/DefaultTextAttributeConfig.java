@@ -213,8 +213,8 @@ public class DefaultTextAttributeConfig implements TextAttributeConfig {
                 throw new IllegalStateException("No font families, provide at least 1");
             }
             if (this.extraColorsEnabled) {
-                if (this.palette16 == null || this.palette256 == null) {
-                    throw new IllegalStateException("No palette16 or palette 256, but extra colors are enabled");
+                if (this.palette16 == null && this.palette256 == null) {
+                    throw new IllegalStateException("No palette16 and palette 256, but extra colors are enabled");
                 }
             } else {
                 if (this.palette8 == null) {
