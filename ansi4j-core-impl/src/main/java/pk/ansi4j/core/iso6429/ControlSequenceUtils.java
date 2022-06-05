@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Pavel Kastornyy
  */
-abstract class AbstractControlSequenceTool {
+class ControlSequenceUtils {
 
     /**
      * I ... I are Intermediate Bytes, which, if present, consist of bit combinations from 02/00=32 to 02/15=47.
@@ -31,7 +31,7 @@ abstract class AbstractControlSequenceTool {
      * @param codepoint
      * @return
      */
-    protected boolean isIntermediateByte(int codepoint) {
+    protected static boolean isIntermediateByte(int codepoint) {
         if (codepoint >= 32 && codepoint <= 47) {
             return true;
         } else {
@@ -48,7 +48,7 @@ abstract class AbstractControlSequenceTool {
      * @param codepoint
      * @return
      */
-    protected boolean isFinalByte(int codepoint) {
+    protected static boolean isFinalByte(int codepoint) {
         if (codepoint >= 64 && codepoint <= 126) {
             return true;
         } else {
@@ -62,7 +62,7 @@ abstract class AbstractControlSequenceTool {
      * @param text
      * @return list of null if there are no arguments.
      */
-    protected List<String> parseArguments(String text) {
+    protected static List<String> parseArguments(String text) {
         List<String> arguments = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         for (int offset = 0; offset < text.length();) {
@@ -93,7 +93,7 @@ abstract class AbstractControlSequenceTool {
         }
     }
 
-    protected boolean isDigit(int codepoint) {
+    protected static boolean isDigit(int codepoint) {
         if (codepoint >= 48 && codepoint <= 57) {
             return true;
         } else {
@@ -109,7 +109,7 @@ abstract class AbstractControlSequenceTool {
         }
     }
 
-    protected boolean isNumber(String str) {
+    protected static boolean isNumber(String str) {
         for (char c : str.toCharArray()) {
             if (!Character.isDigit(c)) return false;
         }

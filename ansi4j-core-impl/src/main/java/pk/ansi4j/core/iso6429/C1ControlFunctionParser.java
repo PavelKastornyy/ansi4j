@@ -21,18 +21,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FinderResult;
+import pk.ansi4j.core.api.FragmentParserResult;
+import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
 import pk.ansi4j.core.api.FunctionFragment;
 import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
+import pk.ansi4j.core.api.FunctionFinderResult;
+import pk.ansi4j.core.api.iso6429.ControlFunction;
+import pk.ansi4j.core.impl.FragmentParserResultImpl;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class C1ControlFunctionParser implements FunctionParser {
+public class C1ControlFunctionParser extends AbstractFunctionParser {
 
     private Configuration config;
 
@@ -48,22 +52,21 @@ public class C1ControlFunctionParser implements FunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public Optional<FunctionFragment> parse(String text, FinderResult result) {
-        if (result.getFirstFunction() == null) {
-            return Optional.empty();
+    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+        var startIndex = 0;
+        int endIndex;
+        if (this.config.getEnvironment() == Environment._7_BIT) {
+            endIndex = startIndex + 2;
         } else {
-            var startIndex = result.getFunctionPosition();
-            int endIndex;
-            if (this.config.getEnvironment() == Environment._7_BIT) {
-                endIndex = startIndex + 2;
-            } else {
-                endIndex = startIndex + 1;
-            }
-            var functionText = text.substring(startIndex, endIndex);
-            var function = result.getFirstFunction();
-            return Optional.of(
-                    new FunctionFragmentImpl(startIndex, endIndex, functionText, function, new ArrayList<>()));
+            endIndex = startIndex + 1;
         }
+        if (!isEndOfFunctionPresent(text, endIndex)) {
+            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
+        }
+        var functionText = text.substring(startIndex, endIndex);
+        return new FragmentParserResultImpl<>(Optional.of(
+                new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
+
     }
 
     /**

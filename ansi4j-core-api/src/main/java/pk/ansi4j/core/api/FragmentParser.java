@@ -15,7 +15,6 @@
  */
 package pk.ansi4j.core.api;
 
-import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -23,14 +22,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Pavel Kastornyy
  */
 @ThreadSafe
-public interface FunctionFinder extends Initializable {
+public interface FragmentParser extends Initializable {
 
-    /**
-     * Finds function in text.
-     *
-     * @param startIndex
-     * @param text
-     * @return finder result or null if function isn't found.
-     */
-    Optional<FunctionFinderResult> find(int startIndex, String text);
 }

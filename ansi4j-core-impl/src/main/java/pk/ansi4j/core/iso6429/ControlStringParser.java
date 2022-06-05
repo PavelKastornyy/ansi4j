@@ -1,19 +1,3 @@
-package pk.ansi4j.core.iso6429;
-
-import java.util.ArrayList;
-import java.util.Optional;
-import pk.ansi4j.core.api.Configuration;
-import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FinderResult;
-import pk.ansi4j.core.api.FunctionFragment;
-import pk.ansi4j.core.api.FunctionParser;
-import pk.ansi4j.core.api.function.FunctionArgument;
-import pk.ansi4j.core.api.function.FunctionType;
-import pk.ansi4j.core.api.iso6429.C1ControlFunction;
-import pk.ansi4j.core.api.iso6429.ControlFunctionType;
-import pk.ansi4j.core.function.impl.FunctionArgumentImpl;
-import pk.ansi4j.core.impl.FunctionFragmentImpl;
-
 /*
  * Copyright 2022 Pavel Kastornyy.
  *
@@ -30,11 +14,32 @@ import pk.ansi4j.core.impl.FunctionFragmentImpl;
  * limitations under the License.
  */
 
+package pk.ansi4j.core.iso6429;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import pk.ansi4j.core.api.Configuration;
+import pk.ansi4j.core.api.Environment;
+import pk.ansi4j.core.api.FragmentParserResult;
+import pk.ansi4j.core.api.FunctionFragment;
+import pk.ansi4j.core.api.FunctionParser;
+import pk.ansi4j.core.api.function.FunctionArgument;
+import pk.ansi4j.core.api.function.FunctionType;
+import pk.ansi4j.core.api.iso6429.C1ControlFunction;
+import pk.ansi4j.core.api.iso6429.ControlFunctionType;
+import pk.ansi4j.core.function.impl.FunctionArgumentImpl;
+import pk.ansi4j.core.impl.FunctionFragmentImpl;
+import pk.ansi4j.core.api.FunctionFinderResult;
+import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
+import pk.ansi4j.core.api.iso6429.ControlFunction;
+import pk.ansi4j.core.impl.FragmentParserResultImpl;
+
+
 /**
  *
  * @author Pavel Kastornyy
  */
-public class ControlStringParser implements FunctionParser {
+public class ControlStringParser extends AbstractFunctionParser {
 
     private Configuration config;
 
@@ -50,42 +55,37 @@ public class ControlStringParser implements FunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public Optional<FunctionFragment> parse(String text, FinderResult result) {
-        if (result.getFirstFunction() == null) {
-            return Optional.empty();
-        } else {
-            var startIndex = result.getFunctionPosition();
-            String openingDelimiter = null;
-            String terminatingTerminator = null;
-            if (this.config.getEnvironment() == Environment._7_BIT) {
-                openingDelimiter = ((C1ControlFunction) result.getFirstFunction()).getPattern();
-                terminatingTerminator = C1ControlFunction.ST_STRING_TERMINATOR.getPattern();
-            } else if (this.config.getEnvironment() == Environment._8_BIT) {
-                openingDelimiter = ((C1ControlFunction) result.getFirstFunction()).get8BitPattern();
-                terminatingTerminator = C1ControlFunction.ST_STRING_TERMINATOR.get8BitPattern();
-            }
-            int endIndex = text.indexOf(terminatingTerminator, startIndex);
-            if (endIndex == -1) {
-                return Optional.empty();
-            }
-            endIndex += terminatingTerminator.length();
-            var functionText = text.substring(startIndex, endIndex);
-            var argumentString = text.substring(startIndex + openingDelimiter.length(), endIndex);
-            var arguments = new ArrayList<FunctionArgument>();
-            if (argumentString.indexOf(";") != -1) {
-                var splits = argumentString.split(";");
-                for (var split : splits) {
-                    var argument = new FunctionArgumentImpl(split, false);
-                    arguments.add(argument);
-                }
-            } else {
-                var argument = new FunctionArgumentImpl(argumentString, false);
+    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+        var startIndex = 0;
+        String openingDelimiter = null;
+        String terminatingTerminator = null;
+        if (this.config.getEnvironment() == Environment._7_BIT) {
+            openingDelimiter = ((C1ControlFunction) function).getPattern();
+            terminatingTerminator = C1ControlFunction.ST_STRING_TERMINATOR.getPattern();
+        } else if (this.config.getEnvironment() == Environment._8_BIT) {
+            openingDelimiter = ((C1ControlFunction) function).get8BitPattern();
+            terminatingTerminator = C1ControlFunction.ST_STRING_TERMINATOR.get8BitPattern();
+        }
+        int endIndex = text.indexOf(terminatingTerminator, startIndex);
+        if (endIndex == -1) {
+            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
+        }
+        endIndex += terminatingTerminator.length();
+        var functionText = text.substring(startIndex, endIndex);
+        var argumentString = text.substring(startIndex + openingDelimiter.length(), endIndex);
+        var arguments = new ArrayList<FunctionArgument>();
+        if (argumentString.indexOf(";") != -1) {
+            var splits = argumentString.split(";");
+            for (var split : splits) {
+                var argument = new FunctionArgumentImpl(split, false);
                 arguments.add(argument);
             }
-            var function = result.getFirstFunction();
-            return Optional.of(
-                    new FunctionFragmentImpl(startIndex, endIndex, functionText, function, arguments));
+        } else {
+            var argument = new FunctionArgumentImpl(argumentString, false);
+            arguments.add(argument);
         }
+        return new FragmentParserResultImpl<>(Optional.of(
+                new FunctionFragmentImpl(functionText, currentIndex, function, arguments)), null);
     }
 
     /**

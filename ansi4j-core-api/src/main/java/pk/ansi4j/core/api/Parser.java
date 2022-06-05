@@ -37,12 +37,12 @@ public interface Parser {
      *
      * @return fragment.
      */
-    Fragment nextFragment();
+    Fragment parseNextFragment();
 
     /**
      * Returns current index in text. Everything before index has been parsed, everything after index hasn't been
      * parsed.
-     * 
+     *
      * @return
      */
     int getCurrentIndex();

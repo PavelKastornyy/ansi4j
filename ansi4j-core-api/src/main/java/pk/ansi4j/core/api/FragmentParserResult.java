@@ -16,21 +16,19 @@
 package pk.ansi4j.core.api;
 
 import java.util.Optional;
-import javax.annotation.concurrent.ThreadSafe;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface FunctionFinder extends Initializable {
+public interface FragmentParserResult<T extends Fragment> {
 
-    /**
-     * Finds function in text.
-     *
-     * @param startIndex
-     * @param text
-     * @return finder result or null if function isn't found.
-     */
-    Optional<FunctionFinderResult> find(int startIndex, String text);
+    public static enum FailureReason {
+
+        UNKNOWN_FUNCTION, NO_END_OF_FUNCTION
+    }
+
+    Optional<T> getFragment();
+
+    FailureReason getFailureReason();
 }

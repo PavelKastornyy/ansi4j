@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import pk.ansi4j.core.api.Configuration;
-import pk.ansi4j.core.api.FinderResult;
+import pk.ansi4j.core.api.FragmentParserResult;
 import pk.ansi4j.core.api.FunctionFragment;
 import pk.ansi4j.core.impl.FunctionMatcher;
 import pk.ansi4j.core.api.FunctionParser;
@@ -29,12 +29,16 @@ import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.function.impl.FunctionArgumentImpl;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
+import pk.ansi4j.core.api.FunctionFinderResult;
+import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
+import pk.ansi4j.core.api.iso6429.ControlFunction;
+import pk.ansi4j.core.impl.FragmentParserResultImpl;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class ControlSequenceParser extends AbstractControlSequenceTool implements FunctionParser {
+public class ControlSequenceParser extends AbstractFunctionParser {
 
     private Configuration config;
 
@@ -44,27 +48,30 @@ public class ControlSequenceParser extends AbstractControlSequenceTool implement
      * {@inheritDoc}
      */
     @Override
-    public Optional<FunctionFragment> parse(String text, FinderResult result) {
-        var startIndex = result.getFunctionPosition();
+    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+        var startIndex = 0;
         FunctionDescriptor functionDescriptor = this.matcher.match(startIndex, text);
         if (functionDescriptor == null) {
-            return Optional.empty();
+            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.UNKNOWN_FUNCTION);
         }
         //getting text that will be parsed
         var codes = functionDescriptor.getCodes();
         final var finalByteIndex = text.indexOf(codes.get(codes.size() - 1), startIndex);
+        if (finalByteIndex == -1) {
+            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
+        }
         var functionText = text.substring(startIndex, finalByteIndex + 1);
         String argStr = null;
         //getting arguments
-        if (this.isIntermediateByte(functionText.codePointAt(functionText.length() - 1))) {
+        if (ControlSequenceUtils.isIntermediateByte(functionText.codePointAt(functionText.length() - 1))) {
             argStr = functionText.substring(2, functionText.length() - 2);
         } else {
             argStr = functionText.substring(2, functionText.length() - 1);
         }
         List<FunctionArgument> arguments = this.parseArguments(argStr, functionDescriptor);
-        var fragment = new FunctionFragmentImpl(startIndex, finalByteIndex + 1, functionText,
+        var fragment = new FunctionFragmentImpl(functionText, currentIndex,
                 functionDescriptor.getFunction(), arguments);
-        return Optional.of(fragment);
+        return new FragmentParserResultImpl<>(Optional.of(fragment), null);
     }
 
     /**
@@ -89,7 +96,7 @@ public class ControlSequenceParser extends AbstractControlSequenceTool implement
             return null;
         }
         List<FunctionArgument> arguments = new ArrayList<>();
-        List<String> strArgs = this.parseArguments(argStr);
+        List<String> strArgs = ControlSequenceUtils.parseArguments(argStr);
         if (strArgs == null) {
             var function = functionDescriptor.getFunction();
             if (function.getDefaultValues() != null) {
@@ -110,7 +117,7 @@ public class ControlSequenceParser extends AbstractControlSequenceTool implement
                         arg = new FunctionArgumentImpl(defaultValues.get(i), true);
                     }
                 } else {
-                    if (this.isNumber(strArg)) {
+                    if (ControlSequenceUtils.isNumber(strArg)) {
                         arg = new FunctionArgumentImpl(Integer.valueOf(strArg), false);
                     } else {
                         arg = new FunctionArgumentImpl(strArg, false);

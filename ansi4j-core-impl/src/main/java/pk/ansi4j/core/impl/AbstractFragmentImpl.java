@@ -32,11 +32,11 @@ public abstract class AbstractFragmentImpl implements Fragment {
 
     private final int endIndex;
 
-    public AbstractFragmentImpl(FragmentType type, int startIndex, int endIndex, String text) {
+    public AbstractFragmentImpl(FragmentType type, String text, int currentIndex) {
         this.type = type;
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
         this.text = text;
+        this.startIndex = currentIndex;
+        this.endIndex = currentIndex + text.length();
     }
 
     /**

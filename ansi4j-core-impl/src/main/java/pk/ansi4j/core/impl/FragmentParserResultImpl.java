@@ -13,24 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansi4j.core.api;
+package pk.ansi4j.core.impl;
 
 import java.util.Optional;
-import javax.annotation.concurrent.ThreadSafe;
+import pk.ansi4j.core.api.Fragment;
+import pk.ansi4j.core.api.FragmentParserResult;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface FunctionFinder extends Initializable {
+public class FragmentParserResultImpl<T extends Fragment> implements FragmentParserResult<T> {
 
-    /**
-     * Finds function in text.
-     *
-     * @param startIndex
-     * @param text
-     * @return finder result or null if function isn't found.
-     */
-    Optional<FunctionFinderResult> find(int startIndex, String text);
+    private final Optional<T> fragment;
+
+    private final FailureReason failureReason;
+
+    public FragmentParserResultImpl(Optional<T> fragment, FailureReason failureReason) {
+        this.fragment = fragment;
+        this.failureReason = failureReason;
+    }
+
+    @Override
+    public Optional<T> getFragment() {
+        return this.fragment;
+    }
+
+    @Override
+    public FailureReason getFailureReason() {
+        return this.failureReason;
+    }
+
 }

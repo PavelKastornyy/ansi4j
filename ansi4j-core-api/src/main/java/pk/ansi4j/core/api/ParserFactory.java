@@ -15,6 +15,8 @@
  */
 package pk.ansi4j.core.api;
 
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 import javax.annotation.concurrent.ThreadSafe;
 import pk.ansi4j.core.api.function.FunctionType;
@@ -60,4 +62,13 @@ public interface ParserFactory {
      * @return
      */
     Parser createParser(String text);
+
+    /**
+     * Creates NOT thread-safe parser that will use thread-safe components.
+     * 
+     * @param stream
+     * @param encoding
+     * @return
+     */
+    Parser createParser(InputStream stream, Charset encoding);
 }

@@ -13,4 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansiparser.core.it;
+package pk.ansi4j.core.iso6429;
+
+import pk.ansi4j.core.api.FunctionParser;
+
+/**
+ *
+ * @author Pavel Kastornyy
+ */
+public abstract class AbstractFunctionParser implements FunctionParser {
+
+    /**
+     * Functions checks if whole function is present in text.
+     * @param text
+     * @param endIndex
+     * @return
+     */
+    protected boolean isEndOfFunctionPresent(String text, int endIndex) {
+        if (endIndex > text.length()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+}

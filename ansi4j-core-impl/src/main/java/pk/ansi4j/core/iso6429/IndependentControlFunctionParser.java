@@ -19,18 +19,22 @@ import java.util.ArrayList;
 import java.util.Optional;
 import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FinderResult;
+import pk.ansi4j.core.api.FragmentParserResult;
 import pk.ansi4j.core.api.FunctionFragment;
 import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
+import pk.ansi4j.core.api.FunctionFinderResult;
+import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
+import pk.ansi4j.core.api.iso6429.ControlFunction;
+import pk.ansi4j.core.impl.FragmentParserResultImpl;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class IndependentControlFunctionParser implements FunctionParser {
+public class IndependentControlFunctionParser extends AbstractFunctionParser {
 
     private Configuration config;
 
@@ -46,17 +50,16 @@ public class IndependentControlFunctionParser implements FunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public Optional<FunctionFragment> parse(String text, FinderResult result) {
-        if (result.getFirstFunction() == null) {
-            return Optional.empty();
-        } else {
-            var startIndex = result.getFunctionPosition();
-            int endIndex = startIndex + 2;
-            var functionText = text.substring(startIndex, endIndex);
-            var function = result.getFirstFunction();
-            return Optional.of(
-                    new FunctionFragmentImpl(startIndex, endIndex, functionText, function, new ArrayList<>()));
+    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+        var startIndex = 0;
+        int endIndex = startIndex + 2;
+        if (!isEndOfFunctionPresent(text, endIndex)) {
+            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
         }
+        var functionText = text.substring(startIndex, endIndex);
+        return new FragmentParserResultImpl<>(Optional.of(
+                new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
+
     }
 
     /**

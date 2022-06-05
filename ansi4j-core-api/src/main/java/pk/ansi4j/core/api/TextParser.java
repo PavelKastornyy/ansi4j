@@ -15,7 +15,6 @@
  */
 package pk.ansi4j.core.api;
 
-import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 
 /**
@@ -24,15 +23,16 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Pavel Kastornyy
  */
 @ThreadSafe
-public interface TextParser extends Initializable {
+public interface TextParser extends FragmentParser {
 
     /**
      * Parses text (string that doesn't contain functions).
      *
-     * @param startIndex is inclusive index
-     * @param endIndex is exclusive index
-     * @param text is the whole text that is parsed.
+     * @param text is a piece of the whole text and doesn't have any functions.
+     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
+     * calculating start and end index as they are relative to the whole text.
+     *
      * @return
      */
-    Optional<TextFragment> parse(int startIndex, int endIndex, String text);
+    FragmentParserResult<TextFragment> parse(String text, int currentIndex);
 }

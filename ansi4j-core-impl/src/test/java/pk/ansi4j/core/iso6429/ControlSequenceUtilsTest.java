@@ -27,54 +27,47 @@ import pk.ansi4j.core.api.iso6429.ControlSequenceFunction;
  *
  * @author Pavel Kastornyy
  */
-public class ControlSequenceParserTest {
-
-    private static ControlSequenceParser parser;
-
-    @BeforeAll
-    public static void init() {
-        parser = new ControlSequenceParser();
-    }
+public class ControlSequenceUtilsTest {
 
     @Test
     public void parseArguments_string_noArg_success() {
-        var arguments = parser.parseArguments("");
+        var arguments = ControlSequenceUtils.parseArguments("");
         assertThat(arguments, nullValue());
     }
 
     @Test
     public void parseArguments_string_oneArgNoDefaultValues_success() {
-        var arguments = parser.parseArguments("20");
+        var arguments = ControlSequenceUtils.parseArguments("20");
         assertThat(arguments, equalTo(List.of("20")));
     }
 
     @Test
     public void parseArguments_string_manyArgsWithoutDefaultValues_success() {
-        var arguments = parser.parseArguments("20;30");
+        var arguments = ControlSequenceUtils.parseArguments("20;30");
         assertThat(arguments, equalTo(List.of("20", "30")));
     }
 
     @Test
     public void parseArguments_string_manyArgsWithOneDefaultValues_success() {
-        var arguments = parser.parseArguments(";20;30");
+        var arguments = ControlSequenceUtils.parseArguments(";20;30");
         assertThat(arguments, equalTo(Arrays.asList(null, "20", "30")));
     }
 
     @Test
     public void parseArguments_string_manyArgsWithTwoDefaultValues_success() {
-        var arguments = parser.parseArguments("20;;30;");
+        var arguments = ControlSequenceUtils.parseArguments("20;;30;");
         assertThat(arguments, equalTo(Arrays.asList("20", null, "30", null)));
     }
 
     @Test
     public void parseArguments_string_manyArgsWithThreeDefaultValues_success() {
-        var arguments = parser.parseArguments(";20;foo;;30;");
+        var arguments = ControlSequenceUtils.parseArguments(";20;foo;;30;");
         assertThat(arguments, equalTo(Arrays.asList(null, "20", "foo", null, "30", null)));
     }
 
     @Test
     public void parseArguments_string_manyArgsWithFourDefaultValues_success() {
-        var arguments = parser.parseArguments(";20;foo;;;30;");
+        var arguments = ControlSequenceUtils.parseArguments(";20;foo;;;30;");
         assertThat(arguments, equalTo(Arrays.asList(null, "20", "foo", null, null, "30", null)));
     }
 

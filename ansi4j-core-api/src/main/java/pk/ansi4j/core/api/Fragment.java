@@ -32,7 +32,7 @@ public interface Fragment {
     FragmentType getType();
 
     /**
-     * Text on which base this fragment was created.
+     * Text on which base this fragment was created (this is a piece of the whole text).
      *
      * @return
      */
@@ -47,7 +47,7 @@ public interface Fragment {
 
     /**
      * End index of the fragment text in the whole text, exclusive.
-     * 
+     *
      * @return
      */
     int getEndIndex();

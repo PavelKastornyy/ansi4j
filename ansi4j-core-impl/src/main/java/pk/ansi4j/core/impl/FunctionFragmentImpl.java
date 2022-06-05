@@ -38,9 +38,8 @@ public class FunctionFragmentImpl extends AbstractFragmentImpl implements Functi
      * @param function
      * @param arguments modifiable collection.
      */
-    public FunctionFragmentImpl(int startIndex, int endIndex, String text,
-            Function function, List<FunctionArgument> arguments) {
-        super(FragmentType.FUNCTION, startIndex, endIndex, text);
+    public FunctionFragmentImpl(String text, int currentIndex, Function function, List<FunctionArgument> arguments) {
+        super(FragmentType.FUNCTION, text, currentIndex);
         this.function = function;
         if (arguments != null) {
             this.arguments = Collections.unmodifiableList(arguments);

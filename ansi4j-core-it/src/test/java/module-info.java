@@ -17,10 +17,10 @@
 module pk.ansi4j.core.it {
     requires pk.ansi4j.core.api;
     requires pk.ansi4j.core.impl;
-    
+
     requires org.slf4j;
     requires org.junit.jupiter.api;
     requires org.hamcrest;
 
-    opens pk.ansiparser.core.it;
+    opens pk.ansi4j.core.it;
 }

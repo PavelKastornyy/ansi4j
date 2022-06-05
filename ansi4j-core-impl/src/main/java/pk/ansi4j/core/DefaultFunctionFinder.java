@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FinderResult;
 import pk.ansi4j.core.api.FunctionFinder;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.C0ControlFunction;
@@ -32,7 +31,8 @@ import pk.ansi4j.core.api.iso6429.ControlFunction;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.api.iso6429.IndependentControlFunction;
 import pk.ansi4j.core.api.utils.Characters;
-import pk.ansi4j.core.impl.FinderResultImpl;
+import pk.ansi4j.core.impl.FunctionFinderResultImpl;
+import pk.ansi4j.core.api.FunctionFinderResult;
 
 /**
  *
@@ -68,7 +68,7 @@ public class DefaultFunctionFinder implements FunctionFinder {
      * {@inheritDoc}
      */
     @Override
-    public Optional<FinderResult> find(int startIndex, String text) {
+    public Optional<FunctionFinderResult> find(int startIndex, String text) {
         for (int offset = startIndex; offset < text.length();) {
             final int codePoint = text.codePointAt(offset);
             FunctionPair pair = null;
@@ -87,7 +87,7 @@ public class DefaultFunctionFinder implements FunctionFinder {
                 pair = this.resolveC1Function(text, offset, codePoint);
             }
             if (pair != null) {
-                var result = new FinderResultImpl(offset, pair.type, pair.function);
+                var result = new FunctionFinderResultImpl(offset, pair.type, pair.function);
                 return Optional.of(result);
             }
             offset += Character.charCount(codePoint);

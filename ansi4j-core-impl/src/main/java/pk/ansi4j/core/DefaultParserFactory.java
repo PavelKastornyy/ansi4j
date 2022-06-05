@@ -15,10 +15,11 @@
  */
 package pk.ansi4j.core;
 
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.FunctionFinder;
@@ -26,9 +27,8 @@ import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.Parser;
 import pk.ansi4j.core.api.ParserFactory;
 import pk.ansi4j.core.api.TextParser;
-import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.function.FunctionType;
-import pk.ansi4j.core.impl.ParserImpl;
+import pk.ansi4j.core.impl.StringParserImpl;
 
 /**
  *
@@ -129,7 +129,19 @@ public class DefaultParserFactory implements ParserFactory {
      */
     @Override
     public Parser createParser(String text) {
-        return new ParserImpl(text, this);
+        if (text == null || text.length() == 0) {
+            throw new IllegalArgumentException("No text provided");
+        }
+        return new StringParserImpl(text, this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Parser createParser(InputStream stream, Charset encoding) {
+        //return new StreamParserImpl(stream, encoding, this);
+        return null;
     }
 
     /**

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansiparser.core.it;
+package pk.ansi4j.core.it;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,12 +93,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_textFnTextFn_success() {
+    public void parseNextFragment_textFnTextFn_success() {
         var text = "2022-03-14 02:32:24.130 [main] \u001b[33;1m[WARN]\u001b[5;R abc.def.0123.ghi";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(5));
@@ -130,12 +130,12 @@ public class DefaultParserIT {
 
 
     @Test
-    public void nextFragment_FnTextFn_success() {
+    public void parseNextFragment_FnTextFn_success() {
         var text = "\u001b[33;1m2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi\u001b[5;R";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -154,12 +154,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_FnFnText_success() {
+    public void parseNextFragment_FnFnText_success() {
         var text = "\u001b[33;1m\u001b[5;R2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -178,13 +178,13 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_textFnFn_success() {
+    public void parseNextFragment_textFnFn_success() {
         var text = "2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi\u001b[33;1m\u001b[5;R";
 
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -203,12 +203,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_defaultArgument_success() {
+    public void parseNextFragment_defaultArgument_success() {
         var text = "\u001b[m";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(1));
@@ -220,12 +220,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_c0In7bitEnv_success() {
+    public void parseNextFragment_c0In7bitEnv_success() {
         var text = "2022-03-14 02:32:24.130 \u000B[main] \u000e [WARN] \u000f abc.def.0123.ghi";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -259,12 +259,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_c0In8bitEnv_success() {
+    public void parseNextFragment_c0In8bitEnv_success() {
         var text = "2022-03-14 02:32:24.130 \u000B[main] \u000e [WARN] \u000f abc.def.0123.ghi";
         var parser = factory8Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -298,12 +298,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_c1In7bitEnv_success() {
+    public void parseNextFragment_c1In7bitEnv_success() {
         var text = "2022-03-14 02:32:24.130 \u001bG[main] \u001bV [WARN] \u001bQ abc.def.0123.ghi";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -337,12 +337,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_c1In8bitEnv_success() {
+    public void parseNextFragment_c1In8bitEnv_success() {
         var text = "2022-03-14 02:32:24.130 \u0087[main] \u0096 [WARN] \u0091 abc.def.0123.ghi";
         var parser = factory8Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -376,12 +376,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_independentIn7bitEnv_success() {
+    public void parseNextFragment_independentIn7bitEnv_success() {
          var text = "2022-03-14 02:32:24.130 \u001bo[main] \u001b| [WARN] \u001b` abc.def.0123.ghi";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -415,12 +415,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_independentIn8bitEnv_success() {
+    public void parseNextFragment_independentIn8bitEnv_success() {
          var text = "2022-03-14 02:32:24.130 \u001bo[main] \u001b| [WARN] \u001b` abc.def.0123.ghi";
         var parser = factory8Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -454,12 +454,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_controlStringIn7bitEnv_success() {
+    public void parseNextFragment_controlStringIn7bitEnv_success() {
          var text = "one two three \u001b]4;6;some text\u001b\\ abc.def.0123.ghi";
         var parser = factory7Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -477,12 +477,12 @@ public class DefaultParserIT {
     }
 
     @Test
-    public void nextFragment_controlStringIn8bitEnv_success() {
+    public void parseNextFragment_controlStringIn8bitEnv_success() {
          var text = "one two three \u009d4;6;some text\u009c abc.def.0123.ghi";
         var parser = factory8Bit.createParser(text);
         List<Fragment> fragments = new ArrayList<>();
         while (parser.hasMoreFragments()) {
-            var fragment = parser.nextFragment();
+            var fragment = parser.parseNextFragment();
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));

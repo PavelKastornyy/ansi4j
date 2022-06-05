@@ -24,7 +24,7 @@ import pk.ansi4j.core.api.iso6429.ControlFunction;
  * @author Pavel Kastornyy
  */
 @Immutable
-public interface FinderResult {
+public interface FunctionFinderResult {
 
     /**
      * Returns position of function in text.
@@ -47,5 +47,5 @@ public interface FinderResult {
      *
      * @return
      */
-    ControlFunction getFirstFunction();
+    ControlFunction getFunction();
 }

@@ -62,7 +62,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(0, "" + Characters.ESC).get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.C0_SET));
-        assertThat(result.getFirstFunction(), equalTo(C0ControlFunction.ESC_ESCAPE));
+        assertThat(result.getFunction(), equalTo(C0ControlFunction.ESC_ESCAPE));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(0, "\u000B").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.C0_SET));
-        assertThat(result.getFirstFunction(), equalTo(C0ControlFunction.VT_LINE_TABULATION));
+        assertThat(result.getFunction(), equalTo(C0ControlFunction.VT_LINE_TABULATION));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(0, Characters.ESC + "E").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.C1_SET));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.NEL_NEXT_LINE));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.NEL_NEXT_LINE));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(0, Characters.ESC + "[").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.CONTROL_SEQUENCE));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(0, "abc" + Characters.ESC + "d").get();
         assertThat(result.getFunctionPosition(), equalTo(3));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.INDEPENDENT_FUNCTION));
-        assertThat(result.getFirstFunction(), equalTo(IndependentControlFunction.CMD_CODING_METHOD_DELIMITER));
+        assertThat(result.getFunction(), equalTo(IndependentControlFunction.CMD_CODING_METHOD_DELIMITER));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(2, "ab123" + Characters.ESC + "[20m").get();
         assertThat(result.getFunctionPosition(), equalTo(5));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.CONTROL_SEQUENCE));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class DefaultFunctionFinderTest {
         var result = finder7Bit.find(0, Characters.ESC + "^").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.CONTROL_STRING));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.PM_PRIVACY_MESSAGE));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.PM_PRIVACY_MESSAGE));
     }
 
     /* 8 BIT */
@@ -120,7 +120,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(0, "" + Characters.ESC).get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.C0_SET));
-        assertThat(result.getFirstFunction(), equalTo(C0ControlFunction.ESC_ESCAPE));
+        assertThat(result.getFunction(), equalTo(C0ControlFunction.ESC_ESCAPE));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(0, "\u000B").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.C0_SET));
-        assertThat(result.getFirstFunction(), equalTo(C0ControlFunction.VT_LINE_TABULATION));
+        assertThat(result.getFunction(), equalTo(C0ControlFunction.VT_LINE_TABULATION));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(0, "\u0085").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.C1_SET));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.NEL_NEXT_LINE));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.NEL_NEXT_LINE));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(0, "\u009b").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.CONTROL_SEQUENCE));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
     }
 
     @Test
@@ -152,7 +152,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(0, "abc" + Characters.ESC + "d").get();
         assertThat(result.getFunctionPosition(), equalTo(3));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.INDEPENDENT_FUNCTION));
-        assertThat(result.getFirstFunction(), equalTo(IndependentControlFunction.CMD_CODING_METHOD_DELIMITER));
+        assertThat(result.getFunction(), equalTo(IndependentControlFunction.CMD_CODING_METHOD_DELIMITER));
     }
 
     @Test
@@ -160,7 +160,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(2, "ab123\u009b20m").get();
         assertThat(result.getFunctionPosition(), equalTo(5));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.CONTROL_SEQUENCE));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.CSI_CONTROL_SEQUENCE_INTRODUCER));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class DefaultFunctionFinderTest {
         var result = finder8Bit.find(0, "\u009e").get();
         assertThat(result.getFunctionPosition(), equalTo(0));
         assertThat(result.getFunctionType(), equalTo(ControlFunctionType.CONTROL_STRING));
-        assertThat(result.getFirstFunction(), equalTo(C1ControlFunction.PM_PRIVACY_MESSAGE));
+        assertThat(result.getFunction(), equalTo(C1ControlFunction.PM_PRIVACY_MESSAGE));
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package pk.ansi4j.core.impl;
 
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pk.ansi4j.core.api.Fragment;
@@ -26,19 +27,19 @@ import pk.ansi4j.core.api.ParserFactory;
  *
  * @author Pavel Kastornyy
  */
-public class ParserImpl implements Parser {
+public class StringParserImpl implements Parser {
 
-    private static final Logger logger = LoggerFactory.getLogger(ParserImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(StringParserImpl.class);
 
-    private final String text;
+    private String text;
 
     private final ParserFactory factory;
 
-    private int index = 0;
-
     private FunctionFragment savedFragment;
 
-    public ParserImpl(String text, ParserFactory factory) {
+    private int currentIndex = 0;
+
+    public StringParserImpl(String text, ParserFactory factory) {
         this.text = text;
         this.factory = factory;
     }
@@ -48,11 +49,7 @@ public class ParserImpl implements Parser {
      */
     @Override
     public boolean hasMoreFragments() {
-        if (index < text.length()) {
-            return true;
-        } else {
-            return false;
-        }
+        return text.length() > 0;
     }
 
     /**
@@ -65,9 +62,9 @@ public class ParserImpl implements Parser {
      * @return
      */
     @Override
-    public Fragment nextFragment() {
+    public Fragment parseNextFragment() {
         if (savedFragment != null) {
-            index += savedFragment.getText().length();
+            this.updateTextData(savedFragment.getText().length());
             var functionFragment = savedFragment;
             savedFragment = null;
             return functionFragment;
@@ -75,22 +72,22 @@ public class ParserImpl implements Parser {
         var functionIndex = this.parseNextFunction();
         if (functionIndex == -1) {
             //there are no functions
-            var savedIndex = index;
-            //set nor more fragments
-            index = text.length();
-            return factory.getTextParser().parse(savedIndex, index, text).get();
+            var t = factory.getTextParser().parse(text, currentIndex).getFragment().get();
+            this.updateTextData(text.length());
+            return t;
         } else {
             //there is a function
-            if (functionIndex == index) {
+            if (functionIndex == 0) {
                 //there is no text before function
-                index = index + savedFragment.getText().length();
+                this.updateTextData(savedFragment.getText().length());
                 var funciontFragment = savedFragment;
                 savedFragment = null;
                 return funciontFragment;
             } else {
                 //there is a text before function
-                var textFragment = factory.getTextParser().parse(index, functionIndex, text).get();
-                index = functionIndex;
+                var piece = text.substring(0, functionIndex);
+                var textFragment = factory.getTextParser().parse(piece, currentIndex).getFragment().get();
+                this.updateTextData(piece.length());
                 return textFragment;
             }
         }
@@ -101,7 +98,7 @@ public class ParserImpl implements Parser {
      */
     @Override
     public int getCurrentIndex() {
-        return index;
+        return currentIndex;
     }
 
     /**
@@ -111,7 +108,7 @@ public class ParserImpl implements Parser {
     private int parseNextFunction() {
         var finder = factory.getFunctionFinder();
         var parsersByType = factory.getFunctionParsersByType();
-        int internalIndex = index - 1;
+        int internalIndex = - 1;
         while (true) {
             internalIndex = internalIndex + 1;
             var finderResult = finder.find(internalIndex, text);
@@ -125,11 +122,12 @@ public class ParserImpl implements Parser {
                     if (parser == null) {
                         continue;
                     }
-                    var fragment = parser.parse(text, fr);
-                    if (fragment.isEmpty()) {
+                    var piece = text.substring(internalIndex);
+                    var resultFragment = parser.parse(piece, fr.getFunction(), internalIndex + currentIndex).getFragment();
+                    if (resultFragment.isEmpty()) {
                         continue;
                     }
-                    savedFragment = fragment.get();
+                    savedFragment = resultFragment.get();
                     return internalIndex;
                 } catch (Exception ex) {
                     //debug level as we don't get errors for cases when function not supported, has mistakes in text etc
@@ -139,6 +137,11 @@ public class ParserImpl implements Parser {
 
             }
         }
+    }
+
+    private void updateTextData(int length) {
+        text = text.substring(length);
+        currentIndex += length;
     }
 
 }

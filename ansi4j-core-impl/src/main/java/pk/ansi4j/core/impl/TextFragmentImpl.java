@@ -24,8 +24,8 @@ import pk.ansi4j.core.api.TextFragment;
  */
 public class TextFragmentImpl extends AbstractFragmentImpl implements TextFragment {
 
-    public TextFragmentImpl(int startIndex, int endIndex, String text) {
-        super(FragmentType.TEXT, startIndex, endIndex, text);
+    public TextFragmentImpl(String text, int currentIndex) {
+        super(FragmentType.TEXT, text, currentIndex);
     }
 
     /**

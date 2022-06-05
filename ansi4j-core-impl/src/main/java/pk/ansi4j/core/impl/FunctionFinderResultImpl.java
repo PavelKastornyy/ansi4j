@@ -15,26 +15,26 @@
  */
 package pk.ansi4j.core.impl;
 
-import pk.ansi4j.core.api.FinderResult;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
+import pk.ansi4j.core.api.FunctionFinderResult;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class FinderResultImpl implements FinderResult {
+public class FunctionFinderResultImpl implements FunctionFinderResult {
 
     private final int functionPosition;
 
     private final FunctionType functionType;
 
-    private final ControlFunction firstFunction;
+    private final ControlFunction function;
 
-    public FinderResultImpl(int functionPosition, FunctionType functionType, ControlFunction firstFunction) {
+    public FunctionFinderResultImpl(int functionPosition, FunctionType functionType, ControlFunction function) {
         this.functionPosition = functionPosition;
         this.functionType = functionType;
-        this.firstFunction = firstFunction;
+        this.function = function;
     }
 
     /**
@@ -57,7 +57,7 @@ public class FinderResultImpl implements FinderResult {
      * {@inheritDoc}
      */
     @Override
-    public ControlFunction getFirstFunction() {
-        return firstFunction;
+    public ControlFunction getFunction() {
+        return function;
     }
 }

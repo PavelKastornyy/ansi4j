@@ -37,7 +37,7 @@ import pk.ansi4j.core.impl.FunctionDescriptor;
  *
  * @author Pavel Kastornyy
  */
-class ControlSequenceMatcher extends AbstractControlSequenceTool implements FunctionMatcher {
+class ControlSequenceMatcher implements FunctionMatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(ControlSequenceMatcher.class);
 
@@ -63,9 +63,9 @@ class ControlSequenceMatcher extends AbstractControlSequenceTool implements Func
         String finalByte = null;
         for (int offset = startIndex + 2; offset < functionText.length();) {
             final int codepoint = functionText.codePointAt(offset);
-            if (this.isIntermediateByte(codepoint)) {
+            if (ControlSequenceUtils.isIntermediateByte(codepoint)) {
                 intermediateByte = new String(Character.toChars(codepoint));
-            } else if (this.isFinalByte(codepoint)) {
+            } else if (ControlSequenceUtils.isFinalByte(codepoint)) {
                 finalByte = new String(Character.toChars(codepoint));
                 break;
             }

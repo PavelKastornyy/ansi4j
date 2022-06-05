@@ -17,8 +17,10 @@ package pk.ansi4j.core;
 
 import java.util.Optional;
 import pk.ansi4j.core.api.Configuration;
+import pk.ansi4j.core.api.FragmentParserResult;
 import pk.ansi4j.core.api.TextFragment;
 import pk.ansi4j.core.api.TextParser;
+import pk.ansi4j.core.impl.FragmentParserResultImpl;
 import pk.ansi4j.core.impl.TextFragmentImpl;
 
 /**
@@ -34,9 +36,8 @@ public class DefaultTextParser implements TextParser {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TextFragment> parse(int startIndex, int endIndex, String text) {
-        var parsedText = text.substring(startIndex, endIndex);
-        return Optional.of(new TextFragmentImpl(startIndex, endIndex, parsedText));
+    public FragmentParserResult<TextFragment> parse(String text, int currentIndex) {
+        return new FragmentParserResultImpl<>(Optional.of(new TextFragmentImpl(text, currentIndex)), null);
     }
 
     /**

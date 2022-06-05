@@ -18,13 +18,14 @@ package pk.ansi4j.core.api;
 import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 import pk.ansi4j.core.api.function.FunctionType;
+import pk.ansi4j.core.api.iso6429.ControlFunction;
 
 /**
  *
  * @author Pavel Kastornyy
  */
 @ThreadSafe
-public interface FunctionParser extends Initializable {
+public interface FunctionParser extends FragmentParser {
 
     /**
      * The type of the function this parser works with.
@@ -36,8 +37,13 @@ public interface FunctionParser extends Initializable {
     /**
      * Parses function text.
      *
-     * @param text is the whole text that is parsed.
-     * @return function fragment or null of function couldn't be parsed.
+     * @param text is a piece of the whole text and starts with the function (first character is the beginning of the
+     * function)
+     * @param function function that must be parsed
+     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
+     * calculating start and end index as they are relative to the whole text.
+     *
+     * @return fragment parser result
      */
-    Optional<FunctionFragment> parse(String text, FinderResult result);
+    FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex);
 }
