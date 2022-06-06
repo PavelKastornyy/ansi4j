@@ -68,6 +68,7 @@ Step 0 - Creating ParserFactory
             .environment(Environment._7_BIT)
             .textParser(new DefaultTextParser())
             .functionFinder(new DefaultFunctionFinder())
+            //if you don't need some types of functions just don't provide parsers for them
             .functionParsers(
                     new C0ControlFunctionParser(),
                     new C1ControlFunctionParser(),
