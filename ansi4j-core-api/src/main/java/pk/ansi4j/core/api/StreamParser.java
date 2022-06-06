@@ -15,24 +15,26 @@
  */
 package pk.ansi4j.core.api;
 
-import javax.annotation.concurrent.ThreadSafe;
+import java.io.Closeable;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * This parser can do any modification with text.
+ * Stream parser is created for one input stream. After using parser must be closed.
  *
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface TextParser extends FragmentParser {
+@NotThreadSafe
+public interface StreamParser extends Parser, Closeable {
 
     /**
-     * Parses text (string that doesn't contain functions).
+     * {@inheritDoc}
      *
-     * @param text is a piece of the whole text and doesn't have any functions.
-     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
-     * calculating start and end index as they are relative to the whole text.
+     * This method will return null when input stream returns -1 and there is no more buffered data. However,
+     * if input stream will provide data again the same instance of StreamParser can be used. Also
+     * see https://stackoverflow.com/questions/611760/java-inputstream-blocking-read
      *
      * @return
      */
-    TextParserResult parse(String text, int currentIndex);
+    @Override
+    public Fragment parse();
 }

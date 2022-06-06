@@ -20,19 +20,16 @@ import java.util.ArrayList;
 import java.util.Optional;
 import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FragmentParserResult;
-import pk.ansi4j.core.api.FunctionFragment;
-import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.function.FunctionArgument;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.C1ControlFunction;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.function.impl.FunctionArgumentImpl;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
-import pk.ansi4j.core.api.FunctionFinderResult;
-import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
+import pk.ansi4j.core.api.FunctionFailureReason;
+import pk.ansi4j.core.api.FunctionParserResult;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
-import pk.ansi4j.core.impl.FragmentParserResultImpl;
+import pk.ansi4j.core.impl.FunctionParserResultImpl;
 
 
 /**
@@ -55,7 +52,7 @@ public class ControlStringParser extends AbstractFunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+    public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
         String openingDelimiter = null;
         String terminatingTerminator = null;
@@ -68,7 +65,7 @@ public class ControlStringParser extends AbstractFunctionParser {
         }
         int endIndex = text.indexOf(terminatingTerminator, startIndex);
         if (endIndex == -1) {
-            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
+            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
         }
         endIndex += terminatingTerminator.length();
         var functionText = text.substring(startIndex, endIndex);
@@ -84,7 +81,7 @@ public class ControlStringParser extends AbstractFunctionParser {
             var argument = new FunctionArgumentImpl(argumentString, false);
             arguments.add(argument);
         }
-        return new FragmentParserResultImpl<>(Optional.of(
+        return new FunctionParserResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, arguments)), null);
     }
 

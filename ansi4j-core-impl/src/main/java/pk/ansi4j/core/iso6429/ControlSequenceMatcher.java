@@ -17,7 +17,6 @@ package pk.ansi4j.core.iso6429;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pk.ansi4j.core.impl.FunctionMatcher;
 import pk.ansi4j.core.impl.FunctionDescriptor;
-import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.api.iso6429.ControlSequenceFunction;

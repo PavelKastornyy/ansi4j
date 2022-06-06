@@ -16,19 +16,19 @@
 package pk.ansi4j.core.api;
 
 import java.util.Optional;
+import javax.annotation.concurrent.Immutable;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public interface FragmentParserResult<T extends Fragment> {
+@Immutable
+public interface FragmentParserResult {
 
-    public static enum FailureReason {
-
-        UNKNOWN_FUNCTION, NO_END_OF_FUNCTION
-    }
-
-    Optional<T> getFragment();
-
+    /**
+     * The reason why fragment wasn't parsed.
+     *
+     * @return
+     */
     FailureReason getFailureReason();
 }

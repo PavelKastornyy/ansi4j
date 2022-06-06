@@ -15,37 +15,20 @@
  */
 package pk.ansi4j.core.api;
 
+import java.util.Optional;
 import javax.annotation.concurrent.Immutable;
-import pk.ansi4j.core.api.function.FunctionType;
-import pk.ansi4j.core.api.iso6429.ControlFunction;
 
 /**
  *
  * @author Pavel Kastornyy
  */
 @Immutable
-public interface FunctionFinderResult {
+public interface TextParserResult extends FragmentParserResult {
 
     /**
-     * Returns position of function in text.
+     * Parsed fragment or empty optional.
      *
      * @return
      */
-    int getFunctionIndex();
-
-    /**
-     * Returns found function type. We don't take type from firstFunction because first function can hold C1 function
-     * but type can be ControlString.
-     *
-     * @return
-     */
-    FunctionType getFunctionType();
-
-    /**
-     * For C0 returns C0 function, for C1 return C1 function, for sequence returns CSI, for independent returns
-     * independent function, for control strings returns opening delimiter.
-     *
-     * @return
-     */
-    ControlFunction getFunction();
+    Optional<TextFragment> getFragment();
 }

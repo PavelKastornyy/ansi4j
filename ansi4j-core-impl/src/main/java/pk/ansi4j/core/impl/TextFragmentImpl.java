@@ -22,7 +22,7 @@ import pk.ansi4j.core.api.TextFragment;
  *
  * @author Pavel Kastornyy
  */
-public class TextFragmentImpl extends AbstractFragmentImpl implements TextFragment {
+public class TextFragmentImpl extends AbstractFragment implements TextFragment {
 
     public TextFragmentImpl(String text, int currentIndex) {
         super(FragmentType.TEXT, text, currentIndex);

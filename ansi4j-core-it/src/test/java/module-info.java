@@ -20,6 +20,7 @@ module pk.ansi4j.core.it {
 
     requires org.slf4j;
     requires org.junit.jupiter.api;
+    requires org.junit.jupiter.params;
     requires org.hamcrest;
 
     opens pk.ansi4j.core.it;

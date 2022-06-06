@@ -45,5 +45,5 @@ public interface FunctionParser extends FragmentParser {
      *
      * @return fragment parser result
      */
-    FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex);
+    FunctionParserResult parse(String text, ControlFunction function, int currentIndex);
 }

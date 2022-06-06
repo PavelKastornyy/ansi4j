@@ -19,20 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import pk.ansi4j.core.api.Configuration;
-import pk.ansi4j.core.api.FragmentParserResult;
-import pk.ansi4j.core.api.FunctionFragment;
 import pk.ansi4j.core.impl.FunctionMatcher;
-import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.function.FunctionArgument;
 import pk.ansi4j.core.impl.FunctionDescriptor;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.function.impl.FunctionArgumentImpl;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
-import pk.ansi4j.core.api.FunctionFinderResult;
-import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
+import pk.ansi4j.core.api.FunctionFailureReason;
+import pk.ansi4j.core.api.FunctionParserResult;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
-import pk.ansi4j.core.impl.FragmentParserResultImpl;
+import pk.ansi4j.core.impl.FunctionParserResultImpl;
 
 /**
  *
@@ -48,17 +45,17 @@ public class ControlSequenceParser extends AbstractFunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+    public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
         FunctionDescriptor functionDescriptor = this.matcher.match(startIndex, text);
         if (functionDescriptor == null) {
-            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.UNKNOWN_FUNCTION);
+            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.UNKNOWN_FUNCTION);
         }
         //getting text that will be parsed
         var codes = functionDescriptor.getCodes();
         final var finalByteIndex = text.indexOf(codes.get(codes.size() - 1), startIndex);
         if (finalByteIndex == -1) {
-            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
+            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
         }
         var functionText = text.substring(startIndex, finalByteIndex + 1);
         String argStr = null;
@@ -71,7 +68,7 @@ public class ControlSequenceParser extends AbstractFunctionParser {
         List<FunctionArgument> arguments = this.parseArguments(argStr, functionDescriptor);
         var fragment = new FunctionFragmentImpl(functionText, currentIndex,
                 functionDescriptor.getFunction(), arguments);
-        return new FragmentParserResultImpl<>(Optional.of(fragment), null);
+        return new FunctionParserResultImpl(Optional.of(fragment), null);
     }
 
     /**

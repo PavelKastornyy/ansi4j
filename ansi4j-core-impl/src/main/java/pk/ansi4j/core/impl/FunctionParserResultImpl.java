@@ -16,32 +16,28 @@
 package pk.ansi4j.core.impl;
 
 import java.util.Optional;
-import pk.ansi4j.core.api.Fragment;
-import pk.ansi4j.core.api.FragmentParserResult;
+import pk.ansi4j.core.api.FunctionFailureReason;
+import pk.ansi4j.core.api.FunctionFragment;
+import pk.ansi4j.core.api.FunctionParserResult;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class FragmentParserResultImpl<T extends Fragment> implements FragmentParserResult<T> {
+public class FunctionParserResultImpl extends AbstractFragmentParserResult implements FunctionParserResult {
 
-    private final Optional<T> fragment;
+    private final Optional<FunctionFragment> fragment;
 
-    private final FailureReason failureReason;
-
-    public FragmentParserResultImpl(Optional<T> fragment, FailureReason failureReason) {
+    public FunctionParserResultImpl(Optional<FunctionFragment> fragment, FunctionFailureReason failureReason) {
+        super(failureReason);
         this.fragment = fragment;
-        this.failureReason = failureReason;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<T> getFragment() {
+    public Optional<FunctionFragment> getFragment() {
         return this.fragment;
     }
-
-    @Override
-    public FailureReason getFailureReason() {
-        return this.failureReason;
-    }
-
 }

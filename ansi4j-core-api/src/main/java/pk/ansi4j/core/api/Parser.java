@@ -26,18 +26,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 public interface Parser {
 
     /**
-     * Checks if there can be any fragments.
+     * Parses next fragment and returns it.
      *
-     * @return
+     * @return fragment or null if there is no fragments to parse.
      */
-    boolean hasMoreFragments();
-
-    /**
-     * Returns next fragment.
-     *
-     * @return fragment.
-     */
-    Fragment parseNextFragment();
+    Fragment parse();
 
     /**
      * Returns current index in text. Everything before index has been parsed, everything after index hasn't been

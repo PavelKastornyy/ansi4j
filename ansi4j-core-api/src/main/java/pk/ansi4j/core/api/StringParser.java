@@ -15,24 +15,14 @@
  */
 package pk.ansi4j.core.api;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * This parser can do any modification with text.
- *
+ * String parser is very light and can be created for every text line if necessary.
+ * 
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface TextParser extends FragmentParser {
+@NotThreadSafe
+public interface StringParser extends Parser {
 
-    /**
-     * Parses text (string that doesn't contain functions).
-     *
-     * @param text is a piece of the whole text and doesn't have any functions.
-     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
-     * calculating start and end index as they are relative to the whole text.
-     *
-     * @return
-     */
-    TextParserResult parse(String text, int currentIndex);
 }

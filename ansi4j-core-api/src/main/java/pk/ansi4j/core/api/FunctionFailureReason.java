@@ -15,24 +15,20 @@
  */
 package pk.ansi4j.core.api;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 /**
- * This parser can do any modification with text.
  *
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface TextParser extends FragmentParser {
+public enum FunctionFailureReason implements FailureReason {
 
     /**
-     * Parses text (string that doesn't contain functions).
-     *
-     * @param text is a piece of the whole text and doesn't have any functions.
-     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
-     * calculating start and end index as they are relative to the whole text.
-     *
-     * @return
+     * Parser can't parse function as it doesn't know how to parse it.
      */
-    TextParserResult parse(String text, int currentIndex);
+    UNKNOWN_FUNCTION,
+
+    /**
+     * This reason happens when text for parsing is read from stream. Using this reason parser understands
+     * if it can parse function or parsing must be repeated when whole function is read from the stream.
+     */
+    NO_END_OF_FUNCTION
 }

@@ -22,7 +22,7 @@ import pk.ansi4j.core.api.FragmentType;
  *
  * @author Pavel Kastornyy
  */
-public abstract class AbstractFragmentImpl implements Fragment {
+abstract class AbstractFragment implements Fragment {
 
     private final FragmentType type;
 
@@ -32,7 +32,7 @@ public abstract class AbstractFragmentImpl implements Fragment {
 
     private final int endIndex;
 
-    public AbstractFragmentImpl(FragmentType type, String text, int currentIndex) {
+    public AbstractFragment(FragmentType type, String text, int currentIndex) {
         this.type = type;
         this.text = text;
         this.startIndex = currentIndex;

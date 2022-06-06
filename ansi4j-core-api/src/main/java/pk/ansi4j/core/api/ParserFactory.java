@@ -56,19 +56,19 @@ public interface ParserFactory {
     TextParser getTextParser();
 
     /**
-     * Creates NOT thread-safe parser that will use thread-safe components.
+     * Creates NOT thread-safe string parser that will use thread-safe components.
      *
      * @param text
      * @return
      */
-    Parser createParser(String text);
+    StringParser createParser(String text);
 
     /**
-     * Creates NOT thread-safe parser that will use thread-safe components.
-     * 
+     * Creates NOT thread-safe stream parser that will use thread-safe components.
+     *
      * @param stream
      * @param encoding
      * @return
      */
-    Parser createParser(InputStream stream, Charset encoding);
+    StreamParser createParser(InputStream stream, Charset encoding, int bufferSize);
 }

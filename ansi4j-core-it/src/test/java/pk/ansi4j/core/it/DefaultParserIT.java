@@ -15,6 +15,9 @@
  */
 package pk.ansi4j.core.it;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -42,12 +45,24 @@ import pk.ansi4j.core.iso6429.C0ControlFunctionParser;
 import pk.ansi4j.core.iso6429.C1ControlFunctionParser;
 import pk.ansi4j.core.iso6429.ControlStringParser;
 import pk.ansi4j.core.iso6429.IndependentControlFunctionParser;
-
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import pk.ansi4j.core.api.Parser;
 /**
  *
  * @author Pavel Kastornyy
  */
 public class DefaultParserIT {
+
+    private static final String _7_BIT_PARSER_PROVIDER = "provide7BitParsers";
+
+    private static final String _8_BIT_PARSER_PROVIDER = "provide8BitParsers";
+
+    @FunctionalInterface
+    private static interface ParserProvider {
+
+        Parser provide(String text);
+    }
 
     private static Configuration configuration7Bit;
 
@@ -92,13 +107,30 @@ public class DefaultParserIT {
             .build();
     }
 
-    @Test
-    public void parseNextFragment_textFnTextFn_success() {
+    protected static List<ParserProvider> provide7BitParsers() {
+        return List.of((text) -> factory7Bit.createParser(text),
+                        (text) -> factory7Bit.createParser(
+                                new ByteArrayInputStream(text.getBytes()),
+                                StandardCharsets.UTF_8,
+                                1024));
+    }
+
+    protected static List<ParserProvider> provide8BitParsers() {
+        return List.of((text) -> factory8Bit.createParser(text),
+                        (text) -> factory8Bit.createParser(
+                                new ByteArrayInputStream(text.getBytes()),
+                                StandardCharsets.UTF_8,
+                                1024));
+    }
+
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_textFnTextFn_success(ParserProvider parserProvider) {
         var text = "2022-03-14 02:32:24.130 [main] \u001b[33;1m[WARN]\u001b[5;R abc.def.0123.ghi";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(5));
@@ -129,13 +161,14 @@ public class DefaultParserIT {
     }
 
 
-    @Test
-    public void parseNextFragment_FnTextFn_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_FnTextFn_success(ParserProvider parserProvider) {
         var text = "\u001b[33;1m2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi\u001b[5;R";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -153,13 +186,14 @@ public class DefaultParserIT {
         this.checkRFunctionFragment(text, f2);
     }
 
-    @Test
-    public void parseNextFragment_FnFnText_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_FnFnText_success(ParserProvider parserProvider) {
         var text = "\u001b[33;1m\u001b[5;R2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -177,14 +211,15 @@ public class DefaultParserIT {
         assertThat(text.substring(f2.getStartIndex(), f2.getEndIndex()), equalTo(f2Text));
     }
 
-    @Test
-    public void parseNextFragment_textFnFn_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void nparse_textFnFn_success(ParserProvider parserProvider) {
         var text = "2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi\u001b[33;1m\u001b[5;R";
 
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -202,30 +237,32 @@ public class DefaultParserIT {
         this.checkRFunctionFragment(text, f2);
     }
 
-    @Test
-    public void parseNextFragment_defaultArgument_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_defaultArgument_success(ParserProvider parserProvider) {
         var text = "\u001b[m";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(1));
-        FunctionFragment fragment = (FunctionFragment) fragments.get(0);
-        assertThat(fragment.getArguments(), notNullValue());
-        assertThat(fragment.getArguments(), hasSize(1));
-        assertThat(fragment.getArguments().get(0).getValue(), equalTo(0));
-        assertThat(fragment.getArguments().get(0).isDefault(), equalTo(true));
+        var f0 = (FunctionFragment) fragments.get(0);
+        assertThat(f0.getArguments(), notNullValue());
+        assertThat(f0.getArguments(), hasSize(1));
+        assertThat(f0.getArguments().get(0).getValue(), equalTo(0));
+        assertThat(f0.getArguments().get(0).isDefault(), equalTo(true));
     }
 
-    @Test
-    public void parseNextFragment_c0In7bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_c0In7bitEnv_success(ParserProvider parserProvider) {
         var text = "2022-03-14 02:32:24.130 \u000B[main] \u000e [WARN] \u000f abc.def.0123.ghi";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -258,13 +295,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_c0In8bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_8_BIT_PARSER_PROVIDER)
+    public void parse_c0In8bitEnv_success(ParserProvider parserProvider) {
         var text = "2022-03-14 02:32:24.130 \u000B[main] \u000e [WARN] \u000f abc.def.0123.ghi";
-        var parser = factory8Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -297,13 +335,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_c1In7bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_c1In7bitEnv_success(ParserProvider parserProvider) {
         var text = "2022-03-14 02:32:24.130 \u001bG[main] \u001bV [WARN] \u001bQ abc.def.0123.ghi";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -336,13 +375,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_c1In8bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_8_BIT_PARSER_PROVIDER)
+    public void parse_c1In8bitEnv_success(ParserProvider parserProvider) {
         var text = "2022-03-14 02:32:24.130 \u0087[main] \u0096 [WARN] \u0091 abc.def.0123.ghi";
-        var parser = factory8Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -375,13 +415,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_independentIn7bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_independentIn7bitEnv_success(ParserProvider parserProvider) {
          var text = "2022-03-14 02:32:24.130 \u001bo[main] \u001b| [WARN] \u001b` abc.def.0123.ghi";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -414,13 +455,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_independentIn8bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_8_BIT_PARSER_PROVIDER)
+    public void parse_independentIn8bitEnv_success(ParserProvider parserProvider) {
          var text = "2022-03-14 02:32:24.130 \u001bo[main] \u001b| [WARN] \u001b` abc.def.0123.ghi";
-        var parser = factory8Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(7));
@@ -453,13 +495,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_controlStringIn7bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_7_BIT_PARSER_PROVIDER)
+    public void parse_controlStringIn7bitEnv_success(ParserProvider parserProvider) {
          var text = "one two three \u001b]4;6;some text\u001b\\ abc.def.0123.ghi";
-        var parser = factory7Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -476,13 +519,14 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
-    @Test
-    public void parseNextFragment_controlStringIn8bitEnv_success() {
+    @ParameterizedTest
+    @MethodSource(_8_BIT_PARSER_PROVIDER)
+    public void parse_controlStringIn8bitEnv_success(ParserProvider parserProvider) {
          var text = "one two three \u009d4;6;some text\u009c abc.def.0123.ghi";
-        var parser = factory8Bit.createParser(text);
+        var parser = parserProvider.provide(text);
         List<Fragment> fragments = new ArrayList<>();
-        while (parser.hasMoreFragments()) {
-            var fragment = parser.parseNextFragment();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
             fragments.add(fragment);
         }
         assertThat(fragments, hasSize(3));
@@ -499,6 +543,93 @@ public class DefaultParserIT {
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
     }
 
+    @Test
+    public void parse_controlStringIn7bitEnvAsStream_success() {
+        var text = "one two three \u001b]4;6;some text\u001b\\ abc.def.0123.ghi";
+        var parser = factory7Bit.createParser(new ByteArrayInputStream(text.getBytes()), StandardCharsets.UTF_8, 6);
+        List<Fragment> fragments = new ArrayList<>();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
+            fragments.add(fragment);
+        }
+        assertThat(fragments, hasSize(7));
+
+        TextFragment f0 = (TextFragment) fragments.get(0);
+        assertThat(f0.getText(), equalTo("one tw"));
+        assertThat(text.substring(f0.getStartIndex(), f0.getEndIndex()), equalTo(f0.getText()));
+
+        TextFragment f1 = (TextFragment) fragments.get(1);
+        assertThat(f1.getText(), equalTo("o thre"));
+        assertThat(text.substring(f1.getStartIndex(), f1.getEndIndex()), equalTo(f1.getText()));
+
+        TextFragment f2 = (TextFragment) fragments.get(2);
+        assertThat(f2.getText(), equalTo("e "));
+        assertThat(text.substring(f2.getStartIndex(), f2.getEndIndex()), equalTo(f2.getText()));
+
+        FunctionFragment f3 = (FunctionFragment) fragments.get(3);
+        assertThat(f3.getFunction(), equalTo(C1ControlFunction.OSC_OPERATING_SYSTEM_COMMAND));
+        assertThat(f3.getArguments(), hasSize(3));
+        assertThat(f3.getText(), equalTo("\u001b]4;6;some text\u001b\\"));
+        assertThat(text.substring(f3.getStartIndex(), f3.getEndIndex()), equalTo(f3.getText()));
+
+        TextFragment f4 = (TextFragment) fragments.get(4);
+        assertThat(f4.getText(), equalTo(" abc."));// "\\" escaping character is used
+        assertThat(text.substring(f4.getStartIndex(), f4.getEndIndex()), equalTo(f4.getText()));
+
+        TextFragment f5 = (TextFragment) fragments.get(5);
+        assertThat(f5.getText(), equalTo("def.01"));
+        assertThat(text.substring(f5.getStartIndex(), f5.getEndIndex()), equalTo(f5.getText()));
+
+        TextFragment f6 = (TextFragment) fragments.get(6);
+        assertThat(f6.getText(), equalTo("23.ghi"));
+        assertThat(text.substring(f6.getStartIndex(), f6.getEndIndex()), equalTo(f6.getText()));
+    }
+
+    @Test
+    public void parse_controlStringIn8bitEnvAsStream_success() {
+         var text = "one two three \u009d4;6;some text\u009c abc.def.0123.ghi";
+        var parser = factory8Bit.createParser(new ByteArrayInputStream(text.getBytes()), StandardCharsets.UTF_8, 6);
+        List<Fragment> fragments = new ArrayList<>();
+        Fragment fragment = null;
+        while ((fragment = parser.parse()) != null) {
+            fragments.add(fragment);
+        }
+        assertThat(fragments, hasSize(8));
+
+        TextFragment f0 = (TextFragment) fragments.get(0);
+        assertThat(f0.getText(), equalTo("one tw"));
+        assertThat(text.substring(f0.getStartIndex(), f0.getEndIndex()), equalTo(f0.getText()));
+
+        TextFragment f1 = (TextFragment) fragments.get(1);
+        assertThat(f1.getText(), equalTo("o thre"));
+        assertThat(text.substring(f1.getStartIndex(), f1.getEndIndex()), equalTo(f1.getText()));
+
+        TextFragment f2 = (TextFragment) fragments.get(2);
+        assertThat(f2.getText(), equalTo("e "));
+        assertThat(text.substring(f2.getStartIndex(), f2.getEndIndex()), equalTo(f2.getText()));
+
+        FunctionFragment f3 = (FunctionFragment) fragments.get(3);
+        assertThat(f3.getFunction(), equalTo(C1ControlFunction.OSC_OPERATING_SYSTEM_COMMAND));
+        assertThat(f3.getArguments(), hasSize(3));
+        assertThat(f3.getText(), equalTo("\u009d4;6;some text\u009c"));
+        assertThat(text.substring(f3.getStartIndex(), f3.getEndIndex()), equalTo(f3.getText()));
+
+        TextFragment f4 = (TextFragment) fragments.get(4);
+        assertThat(f4.getText(), equalTo(" "));// "\\" escaping character is used
+        assertThat(text.substring(f4.getStartIndex(), f4.getEndIndex()), equalTo(f4.getText()));
+
+        TextFragment f5 = (TextFragment) fragments.get(5);
+        assertThat(f5.getText(), equalTo("abc.de"));
+        assertThat(text.substring(f5.getStartIndex(), f5.getEndIndex()), equalTo(f5.getText()));
+
+        TextFragment f6 = (TextFragment) fragments.get(6);
+        assertThat(f6.getText(), equalTo("f.0123"));
+        assertThat(text.substring(f6.getStartIndex(), f6.getEndIndex()), equalTo(f6.getText()));
+
+        TextFragment f7 = (TextFragment) fragments.get(7);
+        assertThat(f7.getText(), equalTo(".ghi"));
+        assertThat(text.substring(f7.getStartIndex(), f7.getEndIndex()), equalTo(f7.getText()));
+    }
 
     private void checkMFunctionFragment(String text, FunctionFragment mFragment) {
         assertThat(mFragment.getType(), equalTo(FragmentType.FUNCTION));
@@ -525,7 +656,6 @@ public class DefaultParserIT {
         assertThat(rFragment.getArguments().get(1).getValue(), equalTo(1));
         assertThat(rFragment.getArguments().get(1).isDefault(), equalTo(true));
     }
-
 }
 
 

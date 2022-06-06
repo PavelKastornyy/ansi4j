@@ -25,14 +25,14 @@ import pk.ansi4j.core.api.FunctionFinderResult;
  */
 public class FunctionFinderResultImpl implements FunctionFinderResult {
 
-    private final int functionPosition;
+    private final int functionIndex;
 
     private final FunctionType functionType;
 
     private final ControlFunction function;
 
-    public FunctionFinderResultImpl(int functionPosition, FunctionType functionType, ControlFunction function) {
-        this.functionPosition = functionPosition;
+    public FunctionFinderResultImpl(int functionIndex, FunctionType functionType, ControlFunction function) {
+        this.functionIndex = functionIndex;
         this.functionType = functionType;
         this.function = function;
     }
@@ -41,8 +41,8 @@ public class FunctionFinderResultImpl implements FunctionFinderResult {
      * {@inheritDoc}
      */
     @Override
-    public int getFunctionPosition() {
-        return this.functionPosition;
+    public int getFunctionIndex() {
+        return this.functionIndex;
     }
 
     /**
@@ -59,5 +59,14 @@ public class FunctionFinderResultImpl implements FunctionFinderResult {
     @Override
     public ControlFunction getFunction() {
         return function;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "FunctionFinderResultImpl{" + "functionIndex=" + functionIndex + ", functionType=" + functionType
+                + ", function=" + function + '}';
     }
 }

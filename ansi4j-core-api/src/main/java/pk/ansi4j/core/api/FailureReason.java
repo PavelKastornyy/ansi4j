@@ -15,24 +15,11 @@
  */
 package pk.ansi4j.core.api;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 /**
- * This parser can do any modification with text.
- *
+ * Marker interface.
+ * 
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface TextParser extends FragmentParser {
+public interface FailureReason {
 
-    /**
-     * Parses text (string that doesn't contain functions).
-     *
-     * @param text is a piece of the whole text and doesn't have any functions.
-     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
-     * calculating start and end index as they are relative to the whole text.
-     *
-     * @return
-     */
-    TextParserResult parse(String text, int currentIndex);
 }

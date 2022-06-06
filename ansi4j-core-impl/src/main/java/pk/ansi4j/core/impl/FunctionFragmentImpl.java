@@ -26,7 +26,7 @@ import pk.ansi4j.core.api.function.FunctionArgument;
  *
  * @author Pavel Kastornyy
  */
-public class FunctionFragmentImpl extends AbstractFragmentImpl implements FunctionFragment {
+public class FunctionFragmentImpl extends AbstractFragment implements FunctionFragment {
 
     private final Function function;
 

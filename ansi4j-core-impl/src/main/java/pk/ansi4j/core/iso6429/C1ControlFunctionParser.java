@@ -17,20 +17,15 @@ package pk.ansi4j.core.iso6429;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FragmentParserResult;
-import static pk.ansi4j.core.api.FragmentParserResult.FailureReason;
-import pk.ansi4j.core.api.FunctionFragment;
-import pk.ansi4j.core.api.FunctionParser;
+import pk.ansi4j.core.api.FunctionFailureReason;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
-import pk.ansi4j.core.api.FunctionFinderResult;
+import pk.ansi4j.core.api.FunctionParserResult;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
-import pk.ansi4j.core.impl.FragmentParserResultImpl;
+import pk.ansi4j.core.impl.FunctionParserResultImpl;
 
 /**
  *
@@ -52,7 +47,7 @@ public class C1ControlFunctionParser extends AbstractFunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public FragmentParserResult<FunctionFragment> parse(String text, ControlFunction function, int currentIndex) {
+    public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
         int endIndex;
         if (this.config.getEnvironment() == Environment._7_BIT) {
@@ -61,10 +56,10 @@ public class C1ControlFunctionParser extends AbstractFunctionParser {
             endIndex = startIndex + 1;
         }
         if (!isEndOfFunctionPresent(text, endIndex)) {
-            return new FragmentParserResultImpl<>(Optional.empty(), FailureReason.NO_END_OF_FUNCTION);
+            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
         }
         var functionText = text.substring(startIndex, endIndex);
-        return new FragmentParserResultImpl<>(Optional.of(
+        return new FunctionParserResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
 
     }

@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansi4j.core.api;
+package pk.ansi4j.core.impl;
 
-import javax.annotation.concurrent.ThreadSafe;
+import java.util.Optional;
+import pk.ansi4j.core.api.FunctionFailureReason;
+import pk.ansi4j.core.api.TextFragment;
+import pk.ansi4j.core.api.TextParserResult;
 
 /**
- * This parser can do any modification with text.
  *
  * @author Pavel Kastornyy
  */
-@ThreadSafe
-public interface TextParser extends FragmentParser {
+public class TextParserResultImpl extends AbstractFragmentParserResult implements TextParserResult {
+
+    private final Optional<TextFragment> fragment;
+
+    public TextParserResultImpl(Optional<TextFragment> fragment, FunctionFailureReason failureReason) {
+        super(failureReason);
+        this.fragment = fragment;
+    }
 
     /**
-     * Parses text (string that doesn't contain functions).
-     *
-     * @param text is a piece of the whole text and doesn't have any functions.
-     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
-     * calculating start and end index as they are relative to the whole text.
-     *
-     * @return
+     * {@inheritDoc}
      */
-    TextParserResult parse(String text, int currentIndex);
+    @Override
+    public Optional<TextFragment> getFragment() {
+        return this.fragment;
+    }
+
 }

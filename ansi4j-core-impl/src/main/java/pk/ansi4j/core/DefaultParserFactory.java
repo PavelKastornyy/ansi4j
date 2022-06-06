@@ -26,8 +26,11 @@ import pk.ansi4j.core.api.FunctionFinder;
 import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.Parser;
 import pk.ansi4j.core.api.ParserFactory;
+import pk.ansi4j.core.api.StreamParser;
+import pk.ansi4j.core.api.StringParser;
 import pk.ansi4j.core.api.TextParser;
 import pk.ansi4j.core.api.function.FunctionType;
+import pk.ansi4j.core.impl.StreamParserImpl;
 import pk.ansi4j.core.impl.StringParserImpl;
 
 /**
@@ -128,8 +131,8 @@ public class DefaultParserFactory implements ParserFactory {
      * {@inheritDoc}
      */
     @Override
-    public Parser createParser(String text) {
-        if (text == null || text.length() == 0) {
+    public StringParser createParser(String text) {
+        if (text == null) {
             throw new IllegalArgumentException("No text provided");
         }
         return new StringParserImpl(text, this);
@@ -139,9 +142,17 @@ public class DefaultParserFactory implements ParserFactory {
      * {@inheritDoc}
      */
     @Override
-    public Parser createParser(InputStream stream, Charset encoding) {
-        //return new StreamParserImpl(stream, encoding, this);
-        return null;
+    public StreamParser createParser(InputStream stream, Charset encoding, int bufferSize) {
+        if (stream == null) {
+            throw new IllegalArgumentException("No stream provided");
+        }
+        if (encoding == null) {
+            throw new IllegalArgumentException("No encoding provided");
+        }
+        if (bufferSize <= 0) {
+            throw new IllegalArgumentException("Illegal value of buffer size: " + bufferSize);
+        }
+        return new StreamParserImpl(stream, encoding, bufferSize, this);
     }
 
     /**
