@@ -159,7 +159,6 @@ abstract class AbstractParser implements Parser {
             internalIndex = foundFunctionIndex;
             var parser = parsersByType.get(finderResult.getFunctionType());
             if (parser == null) {
-                logger.warn("No parser for functionType={}", finderResult.getFunctionType());
                 this.functionFinderResult = null;
                 continue;
             }
