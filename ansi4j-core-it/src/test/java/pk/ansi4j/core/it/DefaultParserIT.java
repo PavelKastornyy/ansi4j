@@ -16,7 +16,6 @@
 package pk.ansi4j.core.it;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,6 @@ import pk.ansi4j.core.iso6429.ControlSequenceParser;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.BeforeAll;
-import pk.ansi4j.core.DefaultConfiguration;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.FragmentType;
 import pk.ansi4j.core.api.FunctionFragment;
 import pk.ansi4j.core.api.iso6429.ControlSequenceFunction;
@@ -64,22 +61,14 @@ public class DefaultParserIT {
         Parser provide(String text);
     }
 
-    private static Configuration configuration7Bit;
-
     private static ParserFactory factory7Bit;
-
-    private static Configuration configuration8Bit;
 
     private static ParserFactory factory8Bit;
 
     @BeforeAll
     public static void init() {
-        configuration7Bit = new DefaultConfiguration.Builder()
-                .environment(Environment._7_BIT)
-                .build();
-
         factory7Bit = new DefaultParserFactory.Builder()
-            .configuration(configuration7Bit)
+            .environment(Environment._7_BIT)
             .textParser(new DefaultTextParser())
             .functionFinder(new DefaultFunctionFinder())
             .functionParsers(
@@ -90,12 +79,8 @@ public class DefaultParserIT {
                     new ControlStringParser())
             .build();
 
-        configuration8Bit = new DefaultConfiguration.Builder()
-                .environment(Environment._8_BIT)
-                .build();
-
         factory8Bit = new DefaultParserFactory.Builder()
-            .configuration(configuration8Bit)
+            .environment(Environment._8_BIT)
             .textParser(new DefaultTextParser())
             .functionFinder(new DefaultFunctionFinder())
             .functionParsers(

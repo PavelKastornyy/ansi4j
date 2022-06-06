@@ -29,10 +29,10 @@ import pk.ansi4j.core.api.function.FunctionType;
 public interface ParserFactory {
 
     /**
-     * Returns configuration.
+     * Returns environment.
      * @return
      */
-    Configuration getConfiguration();
+    Environment getEnvironment();
 
     /**
      * Returns thread-safe type of finder.

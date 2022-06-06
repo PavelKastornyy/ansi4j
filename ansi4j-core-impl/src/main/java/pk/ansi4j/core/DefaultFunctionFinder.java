@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.FunctionFinder;
 import pk.ansi4j.core.api.function.FunctionType;
@@ -54,7 +53,7 @@ public class DefaultFunctionFinder implements FunctionFinder {
         }
     }
 
-    private Configuration config;
+    private Environment environment;
 
     private final Map<Integer, ControlFunction> c0FunctionsByCode = new HashMap<>();
 
@@ -75,7 +74,7 @@ public class DefaultFunctionFinder implements FunctionFinder {
             if (codePoint == Characters.ESC) {
                 //escape is processed separately because it can be of many types
                 pair = this.resolveIndependentFunction(text, offset);
-                if (pair == null && this.config.getEnvironment() == Environment._7_BIT) {
+                if (pair == null && this.environment == Environment._7_BIT) {
                     pair = this.resolveC1Function(text, offset, codePoint);
                 }
                 if (pair == null) {
@@ -83,7 +82,7 @@ public class DefaultFunctionFinder implements FunctionFinder {
                 }
             } else if (codePoint <= 31) {
                 pair = this.resolveC0Function(codePoint);
-            } else if (codePoint >= 0x80 && codePoint <= 0x9F && this.config.getEnvironment() == Environment._8_BIT) {
+            } else if (codePoint >= 0x80 && codePoint <= 0x9F && this.environment == Environment._8_BIT) {
                 pair = this.resolveC1Function(text, offset, codePoint);
             }
             if (pair != null) {
@@ -99,37 +98,37 @@ public class DefaultFunctionFinder implements FunctionFinder {
      * {@inheritDoc}
      */
     @Override
-    public void initialize(Configuration config) {
-        this.config = config;
+    public void initialize(Environment environment) {
+        this.environment = environment;
         //C0
         //we adding all 34 functions, where 4 functions have code duplicates, so, after we have 32 entries in map.
         Arrays.asList(C0ControlFunction.values()).forEach(f -> {
             c0FunctionsByCode.put((int) f.getPattern().charAt(0), f);
         });
         //now we set correct functions by environment
-        if (this.config.getEnvironment() == Environment._7_BIT) {
+        if (this.environment == Environment._7_BIT) {
             var f = C0ControlFunction.SO_SHIFT_OUT;
             c0FunctionsByCode.put((int) f.getPattern().charAt(0), f);
             f = C0ControlFunction.SI_SHIFT_IN;
             c0FunctionsByCode.put((int) f.getPattern().charAt(0), f);
-        } else if (this.config.getEnvironment() == Environment._8_BIT) {
+        } else if (this.environment == Environment._8_BIT) {
             var f = C0ControlFunction.LS0_LOCKING_SHIFT_ZERO;
             c0FunctionsByCode.put((int) f.getPattern().charAt(0), f);
             f = C0ControlFunction.LS1_LOCKING_SHIFT_ONE;
             c0FunctionsByCode.put((int) f.getPattern().charAt(0), f);
         }
-        logger.debug("Added {} C0 functions to index in {}", c0FunctionsByCode.size(), config.getEnvironment());
+        logger.debug("Added {} C0 functions to index in {}", c0FunctionsByCode.size(), this.environment);
         //C1
-        if (this.config.getEnvironment() == Environment._7_BIT) {
+        if (this.environment == Environment._7_BIT) {
             Arrays.asList(C1ControlFunction.values()).forEach(f -> {
                 c1FunctionsByPattern.put(f.getPattern(), f);
             });
-            logger.debug("Added {} C1 functions to index in {}", c1FunctionsByPattern.size(), config.getEnvironment());
-        } else if (this.config.getEnvironment() == Environment._8_BIT) {
+            logger.debug("Added {} C1 functions to index in {}", c1FunctionsByPattern.size(), this.environment);
+        } else if (this.environment == Environment._8_BIT) {
             Arrays.asList(C1ControlFunction.values()).forEach(f -> {
                 c1FunctionsByCode.put((int) ((C1ControlFunction)f).get8BitPattern().charAt(0), f);
             });
-            logger.debug("Added {} C1 functions to index in {}", c1FunctionsByCode.size(), config.getEnvironment());
+            logger.debug("Added {} C1 functions to index in {}", c1FunctionsByCode.size(), this.environment);
         } else {
             throw new IllegalStateException("Unknown environment");
         }
@@ -138,7 +137,7 @@ public class DefaultFunctionFinder implements FunctionFinder {
             independentFunctionsByPattern.put(f.getPattern(), f);
         });
         logger.debug("Added {} independent functions to index in {}", independentFunctionsByPattern.size(),
-                config.getEnvironment());
+                this.environment);
     }
 
     private FunctionPair resolveIndependentFunction(String functionText, int offset) {
@@ -163,13 +162,13 @@ public class DefaultFunctionFinder implements FunctionFinder {
 
     private FunctionPair resolveC1Function(String functionText, int offset, int codePoint) {
         ControlFunction function = null;
-        if (this.config.getEnvironment() == Environment._7_BIT) {
+        if (this.environment == Environment._7_BIT) {
             if (offset + 1 >= functionText.length()) {
                 return null;
             }
             var identifier = "" + Characters.ESC + new String(new int[] {functionText.codePointAt(offset + 1)}, 0, 1);
             function = this.c1FunctionsByPattern.get(identifier);
-        } else if (this.config.getEnvironment() == Environment._8_BIT) {
+        } else if (this.environment == Environment._8_BIT) {
             function = this.c1FunctionsByCode.get(codePoint);
         }
         if (function == null) {

@@ -21,9 +21,6 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.BeforeAll;
-import pk.ansi4j.core.DefaultConfiguration;
-import pk.ansi4j.core.api.Configuration;
-import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.iso6429.ControlSequenceFunction;
 import pk.ansi4j.core.api.utils.Characters;
 

@@ -17,7 +17,6 @@ package pk.ansi4j.core.iso6429;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
@@ -31,8 +30,6 @@ import pk.ansi4j.core.impl.FunctionParserResultImpl;
  * @author Pavel Kastornyy
  */
 public class IndependentControlFunctionParser extends AbstractFunctionParser {
-
-    private Configuration config;
 
     /**
      * {@inheritDoc}
@@ -55,14 +52,5 @@ public class IndependentControlFunctionParser extends AbstractFunctionParser {
         var functionText = text.substring(startIndex, endIndex);
         return new FunctionParserResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize(Configuration config) {
-        this.config = config;
-
     }
 }

@@ -17,7 +17,6 @@ package pk.ansi4j.core.iso6429;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.FunctionFailureReason;
 import pk.ansi4j.core.api.function.FunctionType;
@@ -32,8 +31,6 @@ import pk.ansi4j.core.impl.FunctionParserResultImpl;
  * @author Pavel Kastornyy
  */
 public class C1ControlFunctionParser extends AbstractFunctionParser {
-
-    private Configuration config;
 
     /**
      * {@inheritDoc}
@@ -50,7 +47,7 @@ public class C1ControlFunctionParser extends AbstractFunctionParser {
     public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
         int endIndex;
-        if (this.config.getEnvironment() == Environment._7_BIT) {
+        if (this.getEnvironment() == Environment._7_BIT) {
             endIndex = startIndex + 2;
         } else {
             endIndex = startIndex + 1;
@@ -61,15 +58,5 @@ public class C1ControlFunctionParser extends AbstractFunctionParser {
         var functionText = text.substring(startIndex, endIndex);
         return new FunctionParserResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize(Configuration config) {
-        this.config = config;
-
     }
 }

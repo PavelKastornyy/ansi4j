@@ -22,8 +22,8 @@ package pk.ansi4j.core.api;
 public interface Initializable {
 
     /**
-     * Initializes object with configuration.
-     * @param config
+     * Initializes object with environment.
+     * @param environment
      */
-    void initialize(Configuration config);
+    void initialize(Environment environment);
 }

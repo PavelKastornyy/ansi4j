@@ -19,14 +19,12 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.BeforeAll;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.iso6429.C0ControlFunction;
 import pk.ansi4j.core.api.iso6429.C1ControlFunction;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.api.iso6429.IndependentControlFunction;
 import pk.ansi4j.core.api.utils.Characters;
-import pk.ansi4j.core.iso6429.C0ControlFunctionParser;
 
 /**
  *
@@ -40,19 +38,11 @@ public class DefaultFunctionFinderTest {
 
     @BeforeAll
     public static void init() {
-        var configuration7Bit = new DefaultConfiguration.Builder()
-                .environment(Environment._7_BIT)
-                .build();
-
         finder7Bit = new DefaultFunctionFinder();
-        finder7Bit.initialize(configuration7Bit);
-
-        var configuration8Bit = new DefaultConfiguration.Builder()
-                .environment(Environment._8_BIT)
-                .build();
+        finder7Bit.initialize(Environment._7_BIT);
 
         finder8Bit = new DefaultFunctionFinder();
-        finder8Bit.initialize(configuration8Bit);
+        finder8Bit.initialize(Environment._8_BIT);
     }
 
     /* 7 BIT */

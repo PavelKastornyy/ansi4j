@@ -16,7 +16,7 @@
 package pk.ansi4j.core;
 
 import java.util.Optional;
-import pk.ansi4j.core.api.Configuration;
+import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.TextParser;
 import pk.ansi4j.core.api.TextParserResult;
 import pk.ansi4j.core.impl.TextFragmentImpl;
@@ -29,7 +29,7 @@ import pk.ansi4j.core.impl.TextParserResultImpl;
  */
 public class DefaultTextParser implements TextParser {
 
-    private Configuration config;
+    private Environment environment;
 
     /**
      * {@inheritDoc}
@@ -43,8 +43,8 @@ public class DefaultTextParser implements TextParser {
      * {@inheritDoc}
      */
     @Override
-    public void initialize(Configuration config) {
-        this.config = config;
+    public void initialize(Environment environment) {
+        this.environment = environment;
     }
 
 }

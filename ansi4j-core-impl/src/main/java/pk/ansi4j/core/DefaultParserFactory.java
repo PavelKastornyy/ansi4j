@@ -21,10 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import pk.ansi4j.core.api.Configuration;
+import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.FunctionFinder;
 import pk.ansi4j.core.api.FunctionParser;
-import pk.ansi4j.core.api.Parser;
 import pk.ansi4j.core.api.ParserFactory;
 import pk.ansi4j.core.api.StreamParser;
 import pk.ansi4j.core.api.StringParser;
@@ -41,7 +40,7 @@ public class DefaultParserFactory implements ParserFactory {
 
     public static class Builder {
 
-        private Configuration configuration;
+        private Environment environment;
 
         private FunctionFinder functionFinder;
 
@@ -53,8 +52,8 @@ public class DefaultParserFactory implements ParserFactory {
             //empty constructor
         }
 
-        public Builder configuration(Configuration configuration) {
-            this.configuration = configuration;
+        public Builder environment(Environment environment) {
+            this.environment = environment;
             return this;
         }
 
@@ -80,8 +79,8 @@ public class DefaultParserFactory implements ParserFactory {
         }
 
         private void validate() {
-            if (configuration == null) {
-                throw new IllegalStateException("No configuration");
+            if (environment == null) {
+                throw new IllegalStateException("No environment");
             }
             if (functionFinder == null) {
                 throw new IllegalStateException("No function finder");
@@ -95,7 +94,7 @@ public class DefaultParserFactory implements ParserFactory {
         }
     }
 
-    private final Configuration configuration;
+    private final Environment environment;
 
     private final FunctionFinder functionFinder;
 
@@ -159,17 +158,17 @@ public class DefaultParserFactory implements ParserFactory {
      * {@inheritDoc}
      */
     @Override
-    public Configuration getConfiguration() {
-        return this.configuration;
+    public Environment getEnvironment() {
+        return this.environment;
     }
 
     private DefaultParserFactory(Builder builder) {
-        this.configuration = builder.configuration;
+        this.environment = builder.environment;
         this.functionFinder = builder.functionFinder;
-        this.functionFinder.initialize(configuration);
+        this.functionFinder.initialize(this.environment);
         this.functionParsersByType = new HashMap(builder.functionParsersByType);
-        this.functionParsersByType.values().forEach(p -> p.initialize(configuration));
+        this.functionParsersByType.values().forEach(p -> p.initialize(this.environment));
         this.textParser = builder.textParser;
-        this.textParser.initialize(configuration);
+        this.textParser.initialize(this.environment);
     }
 }

@@ -18,7 +18,6 @@ package pk.ansi4j.core.iso6429;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.function.FunctionArgument;
 import pk.ansi4j.core.api.function.FunctionType;
@@ -38,8 +37,6 @@ import pk.ansi4j.core.impl.FunctionParserResultImpl;
  */
 public class ControlStringParser extends AbstractFunctionParser {
 
-    private Configuration config;
-
     /**
      * {@inheritDoc}
      */
@@ -56,10 +53,10 @@ public class ControlStringParser extends AbstractFunctionParser {
         var startIndex = 0;
         String openingDelimiter = null;
         String terminatingTerminator = null;
-        if (this.config.getEnvironment() == Environment._7_BIT) {
+        if (this.getEnvironment() == Environment._7_BIT) {
             openingDelimiter = ((C1ControlFunction) function).getPattern();
             terminatingTerminator = C1ControlFunction.ST_STRING_TERMINATOR.getPattern();
-        } else if (this.config.getEnvironment() == Environment._8_BIT) {
+        } else if (this.getEnvironment() == Environment._8_BIT) {
             openingDelimiter = ((C1ControlFunction) function).get8BitPattern();
             terminatingTerminator = C1ControlFunction.ST_STRING_TERMINATOR.get8BitPattern();
         }
@@ -83,14 +80,5 @@ public class ControlStringParser extends AbstractFunctionParser {
         }
         return new FunctionParserResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, arguments)), null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize(Configuration config) {
-        this.config = config;
-
     }
 }

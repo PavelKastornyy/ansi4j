@@ -42,7 +42,6 @@ Core contains all base classes for working with control functions, parsers and t
 
 Base components:
 
-* Configuration that contains all settings for parser factory and other elements.
 * ParserFactory is thread-safe instance of factory, that can be used for creating N parsers for parsing N texts.
 So, usually there is only one factory.
 * FunctionFinder finds function in a text and resolves found function.
@@ -65,14 +64,8 @@ So, usually there is only one factory.
 
 Step 0 - Creating ParserFactory
 
-    //first of all we need configuration
-    Configuration config = new DefaultConfiguration.Builder()
-                .environment(Environment._7_BIT)
-                .build();
-
-    //now we create parser factory
     ParserFactory factory = new DefaultParserFactory.Builder()
-            .configuration(config)
+            .environment(Environment._7_BIT)
             .textParser(new DefaultTextParser())
             .functionFinder(new DefaultFunctionFinder())
             .functionParsers(

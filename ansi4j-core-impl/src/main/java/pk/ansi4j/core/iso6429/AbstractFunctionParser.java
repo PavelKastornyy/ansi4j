@@ -15,6 +15,7 @@
  */
 package pk.ansi4j.core.iso6429;
 
+import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.FunctionParser;
 
 /**
@@ -22,6 +23,8 @@ import pk.ansi4j.core.api.FunctionParser;
  * @author Pavel Kastornyy
  */
 public abstract class AbstractFunctionParser implements FunctionParser {
+
+    private Environment environment;
 
     /**
      * Functions checks if whole function is present in text.
@@ -37,4 +40,15 @@ public abstract class AbstractFunctionParser implements FunctionParser {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initialize(Environment environment) {
+        this.environment = environment;
+    }
+
+    protected Environment getEnvironment() {
+        return environment;
+    }
 }

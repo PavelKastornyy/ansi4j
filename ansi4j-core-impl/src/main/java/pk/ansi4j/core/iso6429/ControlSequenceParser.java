@@ -18,7 +18,6 @@ package pk.ansi4j.core.iso6429;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import pk.ansi4j.core.api.Configuration;
 import pk.ansi4j.core.impl.FunctionMatcher;
 import pk.ansi4j.core.api.function.FunctionArgument;
 import pk.ansi4j.core.impl.FunctionDescriptor;
@@ -36,8 +35,6 @@ import pk.ansi4j.core.impl.FunctionParserResultImpl;
  * @author Pavel Kastornyy
  */
 public class ControlSequenceParser extends AbstractFunctionParser {
-
-    private Configuration config;
 
     private final FunctionMatcher matcher = new ControlSequenceMatcher();
 
@@ -77,14 +74,6 @@ public class ControlSequenceParser extends AbstractFunctionParser {
     @Override
     public FunctionType getTargetFunctionType() {
         return ControlFunctionType.CONTROL_SEQUENCE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize(Configuration config) {
-        this.config = config;
     }
 
     List<FunctionArgument> parseArguments(String argStr, FunctionDescriptor functionDescriptor) {
