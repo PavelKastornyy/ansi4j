@@ -16,6 +16,7 @@
 package pk.ansi4j.core.it;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +45,17 @@ import pk.ansi4j.core.iso6429.ControlStringParser;
 import pk.ansi4j.core.iso6429.IndependentControlFunctionParser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pk.ansi4j.core.api.Parser;
+import pk.ansi4j.core.api.StreamParser;
 /**
  *
  * @author Pavel Kastornyy
  */
 public class DefaultParserIT {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultParserIT.class);
 
     private static final String _7_BIT_PARSER_PROVIDER = "provide7BitParsers";
 
@@ -143,6 +149,7 @@ public class DefaultParserIT {
         var f4Text = " abc.def.0123.ghi";
         assertThat(f4.getText(), equalTo(f4Text));
         assertThat(text.substring(f4.getStartIndex(), f4.getEndIndex()), equalTo(f4Text));
+        this.closeParser(parser);
     }
 
 
@@ -169,6 +176,7 @@ public class DefaultParserIT {
 
         FunctionFragment f2 = (FunctionFragment) fragments.get(2);
         this.checkRFunctionFragment(text, f2);
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -194,6 +202,7 @@ public class DefaultParserIT {
         var f2Text = "2022-03-14 02:32:24.130 [main] [WARN] abc.def.0123.ghi";
         assertThat(f2.getText(), equalTo(f2Text));
         assertThat(text.substring(f2.getStartIndex(), f2.getEndIndex()), equalTo(f2Text));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -220,6 +229,7 @@ public class DefaultParserIT {
 
         FunctionFragment f2 = (FunctionFragment) fragments.get(2);
         this.checkRFunctionFragment(text, f2);
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -238,6 +248,7 @@ public class DefaultParserIT {
         assertThat(f0.getArguments(), hasSize(1));
         assertThat(f0.getArguments().get(0).getValue(), equalTo(0));
         assertThat(f0.getArguments().get(0).isDefault(), equalTo(true));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -278,6 +289,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(6);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -318,6 +330,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(6);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -358,6 +371,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(6);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -398,6 +412,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(6);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -438,6 +453,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(6);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -478,6 +494,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(6);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -502,6 +519,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(2);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @ParameterizedTest
@@ -526,6 +544,7 @@ public class DefaultParserIT {
 
         ft = (TextFragment) fragments.get(2);
         assertThat(ft.getText(), equalTo(" abc.def.0123.ghi"));
+        this.closeParser(parser);
     }
 
     @Test
@@ -568,6 +587,7 @@ public class DefaultParserIT {
         TextFragment f6 = (TextFragment) fragments.get(6);
         assertThat(f6.getText(), equalTo("23.ghi"));
         assertThat(text.substring(f6.getStartIndex(), f6.getEndIndex()), equalTo(f6.getText()));
+        this.closeParser(parser);
     }
 
     @Test
@@ -614,6 +634,7 @@ public class DefaultParserIT {
         TextFragment f7 = (TextFragment) fragments.get(7);
         assertThat(f7.getText(), equalTo(".ghi"));
         assertThat(text.substring(f7.getStartIndex(), f7.getEndIndex()), equalTo(f7.getText()));
+        this.closeParser(parser);
     }
 
     private void checkMFunctionFragment(String text, FunctionFragment mFragment) {
@@ -640,6 +661,17 @@ public class DefaultParserIT {
         assertThat(rFragment.getArguments().get(0).isDefault(), equalTo(false));
         assertThat(rFragment.getArguments().get(1).getValue(), equalTo(1));
         assertThat(rFragment.getArguments().get(1).isDefault(), equalTo(true));
+    }
+
+    private void closeParser(Parser parser) {
+        if (parser instanceof StreamParser) {
+            var streamParser = (StreamParser) parser;
+            try {
+                streamParser.close();
+            } catch (IOException ex) {
+                logger.error("Error closing stream parser", ex);
+            }
+        }
     }
 }
 
