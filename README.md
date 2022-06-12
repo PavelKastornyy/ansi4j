@@ -42,27 +42,27 @@ Core contains all base classes for working with control functions, parsers and t
 
 Base components:
 
-* ParserFactory is thread-safe instance of factory, that can be used for creating N parsers for parsing N texts.
+* `ParserFactory` is thread-safe instance of factory, that can be used for creating N parsers for parsing N texts.
 So, usually there is only one factory.
-* Parser is a non thread-safe object that reads text, manages finder and handlers and returns parsed fragment. 
-There are two types of Parser:
-    * StringParser for parsing String. StringParser is very light, so it is possible to create it for every text line.
-    * StreamParser for parsing InputStream. One instance of StreamParser is created for one instance of InputStream.
-* FunctionFinder finds function in a text and resolves found function.
-* FragmentHandler is a thread-safe object for processing fragment of text. There are two types of FragmentHandler:
-    * TextHandler is a handler for processing a text that doesn't contain any control functions in it.
+* `Parser` is a non thread-safe object that reads text, manages finder and handlers and returns parsed fragment. 
+There are two types of parsers:
+    * `StringParser` for parsing `String`. `StringParser` is very light, so it is possible to create it for every text line.
+    * `StreamParser` for parsing `InputStream`. One instance of `StreamParser` is created for one instance of `InputStream`.
+* `FunctionFinder` finds function in a text and resolves found function.
+* `FragmentHandler` is a thread-safe object for processing fragment of text. There are two types of handlers:
+    * `TextHandler` is a handler for processing a text that doesn't contain any control functions in it.
       This handler allows to modify this text within system. Default implementation doesn't modify text and just wraps
-      it in TextFragment.
-    * FunctionHandler is a handler for processing functions in a text. For every type of function separate function 
-    handler exists. As a result FunctionHandler returns FunctionFragment.
-* Fragment is a processed piece of text. There are two types of fragments:
-    * TextFragment that contains information about text pieces without functions.
-    * FunctionFragment that contains information about functions in text.
+      it in `TextFragment`.
+    * `FunctionHandler` is a handler for processing functions in a text. For every type of function separate function 
+    handler exists. As a result `FunctionHandler` returns `FunctionFragment`.
+* `Fragment` is a processed piece of text. There are two types of fragments:
+    * `TextFragment` that contains information about text pieces without functions.
+    * `FunctionFragment` that contains information about functions in text.
 
 
 ### Usage <a name="ansi4j-core-usage"></a>
 
-Step 0 - Creating ParserFactory
+Step 0 - Creating `ParserFactory`
 
     ParserFactory factory = new DefaultParserFactory.Builder()
             .environment(Environment._7_BIT)
@@ -77,7 +77,7 @@ Step 0 - Creating ParserFactory
                     new ControlStringHandler())
             .build();
 
-Step 1A - Creating StringParser
+Step 1A - Creating `StringParser`
 
     //this is the text we are going to parse
     String text = ...;
@@ -85,7 +85,7 @@ Step 1A - Creating StringParser
     //we need a parser
     var parser = factory.createParser(text);
 
-Step 1B - Creating StreamParser
+Step 1B - Creating `StreamParser`
 
     //this is the stream we are going to parse
     InputStream stream = ...;
@@ -116,8 +116,8 @@ Step 2 - Parsing
 
 ### Thread-safety <a name="ansi4j-core-thread"></a>
 
-ParserFactory is thread-safe. StringParser and StreamParser are not thread-safe. FunctionFinder, TextHandler and 
-FunctionHandlers are thread-safe. Detailed information about thread-safety is provided in every interface in core API 
+`ParserFactory` is thread-safe. `StringParser` and `StreamParser` are not thread-safe. `FunctionFinder`, `TextHandler` and 
+`FunctionHandler`s are thread-safe. Detailed information about thread-safety is provided in every interface in core API 
 module.
 
 ## CSS extension <a name="ansi4j-css"></a>
@@ -130,7 +130,7 @@ font, foreground color, background color.
 
 Important notes:
 
-* To enable blinking withh Css3Generator is is necessary to add the following keyframes to your stylesheet:
+* To enable blinking with Css3Generator is is necessary to add the following keyframes to your stylesheet:
 @keyframes ansi4j-blinker {50% { opacity: 0; }}.
 * Blinking with JavaFX using CSS doesn't work, as JavaFX won't support CSS animation until this
 [issue](https://bugs.openjdk.java.net/browse/JDK-8283676) is resolved. If blinking is required it is possible to
@@ -138,18 +138,18 @@ work with AttributeContext directly and create keyframes programmatically.
 
 Base components:
 
-* Palette - ISO 6429 supports only 8 colors (3 bits). However, today many terminals supports 4, 8 and 24 bit colors.
+* `Palette` - ISO 6429 supports only 8 colors (3 bits). However, today many terminals supports 4, 8 and 24 bit colors.
 However, these extra colors are not included in the standard. So, to support them use `extraColorsEnabled()` method
-in config. Pelette is an interface, so it is easy to add custom 8, 16, 256 color palette.
-* AttributeConfig that is created for every Attribute enumeration class.
-* AttributeContext keeps information about current attributes and their values.
-* AttributeResolver resolves attributes on base of function arguments and saves attributes to context. Finally returns
+in config. `Palette` is an interface, so it is easy to add custom 8, 16, 256 color palette.
+* `AttributeConfig` that is created for every `Attribute` enumeration class.
+* `AttributeContext` keeps information about current attributes and their values.
+* `AttributeResolver` resolves attributes on base of function arguments and saves attributes to context. Finally returns
 list of attribute changes.
-* CssGenerator generates CSS declarations on the base of attribute changes. Currently there are two types of CSS
+* `CssGenerator` generates CSS declarations on the base of attribute changes. Currently there are two types of CSS
 generators: CSS3 generator and JavaFX CSS generator. The latter one is used when it is required to create styles
 for JavaFX nodes.
 
-Such architecture allows easily to create new Attrubute types and resolvers with CSS generators for them.
+Such architecture allows easily to create new attribute types and resolvers with CSS generators for them.
 
 ### Usage <a name="ansi4j-css-usage"></a>
 
