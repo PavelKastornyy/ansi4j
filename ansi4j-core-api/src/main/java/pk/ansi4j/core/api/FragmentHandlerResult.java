@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansi4j.core.impl;
+package pk.ansi4j.core.api;
 
 import java.util.Optional;
-import pk.ansi4j.core.api.FunctionFailureReason;
-import pk.ansi4j.core.api.FunctionFragment;
-import pk.ansi4j.core.api.FunctionParserResult;
+import javax.annotation.concurrent.Immutable;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class FunctionParserResultImpl extends AbstractFragmentParserResult implements FunctionParserResult {
-
-    private final Optional<FunctionFragment> fragment;
-
-    public FunctionParserResultImpl(Optional<FunctionFragment> fragment, FunctionFailureReason failureReason) {
-        super(failureReason);
-        this.fragment = fragment;
-    }
+@Immutable
+public interface FragmentHandlerResult {
 
     /**
-     * {@inheritDoc}
+     * The reason why fragment wasn't parsed.
+     *
+     * @return
      */
-    @Override
-    public Optional<FunctionFragment> getFragment() {
-        return this.fragment;
-    }
+    FailureReason getFailureReason();
 }

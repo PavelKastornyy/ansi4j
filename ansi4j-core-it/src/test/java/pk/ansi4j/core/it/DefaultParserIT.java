@@ -24,11 +24,11 @@ import org.junit.jupiter.api.Test;
 import pk.ansi4j.core.DefaultFunctionFinder;
 import pk.ansi4j.core.api.ParserFactory;
 import pk.ansi4j.core.DefaultParserFactory;
-import pk.ansi4j.core.DefaultTextParser;
+import pk.ansi4j.core.DefaultTextHandler;
 import pk.ansi4j.core.api.Fragment;
 import pk.ansi4j.core.api.TextFragment;
 import pk.ansi4j.core.api.utils.Characters;
-import pk.ansi4j.core.iso6429.ControlSequenceParser;
+import pk.ansi4j.core.iso6429.ControlSequenceHandler;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,10 +39,10 @@ import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.iso6429.C0ControlFunction;
 import pk.ansi4j.core.api.iso6429.C1ControlFunction;
 import pk.ansi4j.core.api.iso6429.IndependentControlFunction;
-import pk.ansi4j.core.iso6429.C0ControlFunctionParser;
-import pk.ansi4j.core.iso6429.C1ControlFunctionParser;
-import pk.ansi4j.core.iso6429.ControlStringParser;
-import pk.ansi4j.core.iso6429.IndependentControlFunctionParser;
+import pk.ansi4j.core.iso6429.C0ControlFunctionHandler;
+import pk.ansi4j.core.iso6429.C1ControlFunctionHandler;
+import pk.ansi4j.core.iso6429.ControlStringHandler;
+import pk.ansi4j.core.iso6429.IndependentControlFunctionHandler;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
@@ -75,26 +75,24 @@ public class DefaultParserIT {
     public static void init() {
         factory7Bit = new DefaultParserFactory.Builder()
             .environment(Environment._7_BIT)
-            .textParser(new DefaultTextParser())
+            .textHandler(new DefaultTextHandler())
             .functionFinder(new DefaultFunctionFinder())
-            .functionParsers(
-                    new C0ControlFunctionParser(),
-                    new C1ControlFunctionParser(),
-                    new ControlSequenceParser(),
-                    new IndependentControlFunctionParser(),
-                    new ControlStringParser())
+            .functionHandlers(new C0ControlFunctionHandler(),
+                    new C1ControlFunctionHandler(),
+                    new ControlSequenceHandler(),
+                    new IndependentControlFunctionHandler(),
+                    new ControlStringHandler())
             .build();
 
         factory8Bit = new DefaultParserFactory.Builder()
             .environment(Environment._8_BIT)
-            .textParser(new DefaultTextParser())
+            .textHandler(new DefaultTextHandler())
             .functionFinder(new DefaultFunctionFinder())
-            .functionParsers(
-                    new C0ControlFunctionParser(),
-                    new C1ControlFunctionParser(),
-                    new ControlSequenceParser(),
-                    new IndependentControlFunctionParser(),
-                    new ControlStringParser())
+            .functionHandlers(new C0ControlFunctionHandler(),
+                    new C1ControlFunctionHandler(),
+                    new ControlSequenceHandler(),
+                    new IndependentControlFunctionHandler(),
+                    new ControlStringHandler())
             .build();
     }
 

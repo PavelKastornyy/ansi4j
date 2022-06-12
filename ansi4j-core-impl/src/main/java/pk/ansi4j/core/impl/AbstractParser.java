@@ -21,10 +21,10 @@ import pk.ansi4j.core.api.FailureReason;
 import pk.ansi4j.core.api.Fragment;
 import pk.ansi4j.core.api.FunctionFinderResult;
 import pk.ansi4j.core.api.FunctionFragment;
-import pk.ansi4j.core.api.FunctionParser;
-import pk.ansi4j.core.api.FunctionParserResult;
 import pk.ansi4j.core.api.Parser;
 import pk.ansi4j.core.api.ParserFactory;
+import pk.ansi4j.core.api.FunctionHandler;
+import pk.ansi4j.core.api.FunctionHandlerResult;
 
 /**
  *
@@ -34,7 +34,7 @@ abstract class AbstractParser implements Parser {
 
     protected static enum FunctionProcessingResult {
 
-        NOT_FOUND, FOUND_BUT_DELAYED, FOUND_AND_PARSED
+        NOT_FOUND, FOUND_BUT_DELAYED, FOUND_AND_HANDLED
     }
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractParser.class);
@@ -48,7 +48,7 @@ abstract class AbstractParser implements Parser {
 
     private FunctionFinderResult functionFinderResult;
 
-    private FunctionParserResult functionParserResult;
+    private FunctionHandlerResult functionHandlerResult;
 
     /**
      * As found function changes as text before function is parsed we use this variable.
@@ -82,11 +82,11 @@ abstract class AbstractParser implements Parser {
      * @return
      */
     protected Fragment doParse() {
-        if (functionParserResult != null) {
-            var functionFragment = this.functionParserResult.getFragment().get();
+        if (functionHandlerResult != null) {
+            var functionFragment = this.functionHandlerResult.getFragment().get();
             this.updateTextData(functionFragment.getText().length());
             this.functionFinderResult = null;
-            this.functionParserResult = null;
+            this.functionHandlerResult = null;
             return functionFragment;
         }
         if (text.length() == 0) {
@@ -97,7 +97,7 @@ abstract class AbstractParser implements Parser {
         var currentIndex = this.getCurrentIndex();
         if (functionProcessingResult == FunctionProcessingResult.NOT_FOUND) {
             //there are no functions
-            var t = factory.getTextParser().parse(text, currentIndex).getFragment().get();
+            var t = factory.getTextHandler().handle(text, currentIndex).getFragment().get();
             this.updateTextData(text.length());
             return t;
         } else if (functionProcessingResult == FunctionProcessingResult.FOUND_BUT_DELAYED) {
@@ -105,7 +105,7 @@ abstract class AbstractParser implements Parser {
             if (functionIndex > 0) {
                 //there is a text before function
                 var piece = text.substring(0, functionIndex);
-                var textFragment = factory.getTextParser().parse(piece, currentIndex).getFragment().get();
+                var textFragment = factory.getTextHandler().handle(piece, currentIndex).getFragment().get();
                 this.updateTextData(piece.length());
                 foundFunctionIndex = 0;
                 return textFragment;
@@ -117,15 +117,15 @@ abstract class AbstractParser implements Parser {
             var functionIndex = foundFunctionIndex;
             if (functionIndex == 0) {
                 //there is no text before function
-                var functionFragment = this.functionParserResult.getFragment().get();
+                var functionFragment = this.functionHandlerResult.getFragment().get();
                 this.updateTextData(functionFragment.getText().length());
                 this.functionFinderResult = null;
-                this.functionParserResult = null;
+                this.functionHandlerResult = null;
                 return functionFragment;
             } else {
                 //there is a text before function
                 var piece = text.substring(0, functionIndex);
-                var textFragment = factory.getTextParser().parse(piece, currentIndex).getFragment().get();
+                var textFragment = factory.getTextHandler().handle(piece, currentIndex).getFragment().get();
                 this.updateTextData(piece.length());
                 return textFragment;
             }
@@ -133,12 +133,12 @@ abstract class AbstractParser implements Parser {
     }
 
     /**
-     * Finds, parses next function, saves finder and parser results.
+     * Finds, parses next function, saves finder and handler results.
      * @return
      */
     protected FunctionProcessingResult findAndParseFunction() {
         var finder = factory.getFunctionFinder();
-        var parsersByType = factory.getFunctionParsersByType();
+        var handlerByType = factory.getFunctionHandlersByType();
         int internalIndex = - 1;
         while (true) {
             internalIndex = internalIndex + 1;
@@ -157,27 +157,27 @@ abstract class AbstractParser implements Parser {
                 finderResult = this.functionFinderResult;
             }
             internalIndex = foundFunctionIndex;
-            var parser = parsersByType.get(finderResult.getFunctionType());
-            if (parser == null) {
+            var handler = handlerByType.get(finderResult.getFunctionType());
+            if (handler == null) {
                 this.functionFinderResult = null;
                 continue;
             }
             var piece = text.substring(internalIndex);
-            var parserResult = parser.parse(piece, finderResult.getFunction(), internalIndex + currentIndex);
-            var resultFragment = parserResult.getFragment();
+            var handlerResult = handler.handle(piece, finderResult.getFunction(), internalIndex + currentIndex);
+            var resultFragment = handlerResult.getFragment();
             if (resultFragment.isEmpty()) {
-                if (this.delayFunctionParsing(parserResult.getFailureReason())) {
+                if (this.delayFunctionParsing(handlerResult.getFailureReason())) {
                     this.functionFinderResult = finderResult;
-                    this.functionParserResult = null;
+                    this.functionHandlerResult = null;
                     return FunctionProcessingResult.FOUND_BUT_DELAYED;
                 } else {
-                    this.logFunctionFailure(finderResult, parserResult);
+                    this.logFunctionFailure(finderResult, handlerResult);
                     continue;
                 }
             }
             this.functionFinderResult = finderResult;
-            this.functionParserResult = parserResult;
-            return FunctionProcessingResult.FOUND_AND_PARSED;
+            this.functionHandlerResult = handlerResult;
+            return FunctionProcessingResult.FOUND_AND_HANDLED;
         }
     }
 
@@ -198,10 +198,9 @@ abstract class AbstractParser implements Parser {
         return factory;
     }
 
-    protected void logFunctionFailure(FunctionFinderResult finderResult,
-            FunctionParserResult parserResult) {
+    protected void logFunctionFailure(FunctionFinderResult finderResult, FunctionHandlerResult handlerResult) {
         logger.warn("Couldn't parse function={} at index={}. Reason is {}",
                 finderResult.getFunction(), this.getCurrentIndex() + finderResult.getFunctionIndex(),
-                parserResult.getFailureReason());
+                handlerResult.getFailureReason());
     }
 }

@@ -44,18 +44,18 @@ Base components:
 
 * ParserFactory is thread-safe instance of factory, that can be used for creating N parsers for parsing N texts.
 So, usually there is only one factory.
+* Parser is a non thread-safe object that reads text, manages finder and handlers and returns parsed fragment. 
+There are two types of Parser:
+    * StringParser for parsing String. StringParser is very light, so it is possible to create it for every text line.
+    * StreamParser for parsing InputStream. One instance of StreamParser is created for one instance of InputStream.
 * FunctionFinder finds function in a text and resolves found function.
-* Parsers. There are two types of parsers:
-    * Parser (created via factory) is a non thread-safe front-end for FragmentParser. There are two types of Parser:
-        * StringParser for parsing String. StringParser is very light, so it is possible to create it for every text line.
-        * StreamParser for parsing InputStream. One instance of StreamParser is created for one instance of InputStream.
-    * FragmentParser is a thread-safe back-end for parsing fragment of text. There are two types of FragmentParser:
-        * TextParser is a parser for parsing a text that doesn't contain any control functions in it.
-          This parser allows to modify this text within system. Default implementation doesn't modify text and just wraps
-          it in TextFragment.
-        * FunctionParser is a parser for parsing functions in a text. For every type of function separate function parser
-        exists. As a result FunctionParser returns FunctionFragment.
-* Fragment is a parsed piece of text. There are two types of fragments:
+* FragmentHandler is a thread-safe object for processing fragment of text. There are two types of FragmentHandler:
+    * TextHandler is a handler for processing a text that doesn't contain any control functions in it.
+      This handler allows to modify this text within system. Default implementation doesn't modify text and just wraps
+      it in TextFragment.
+    * FunctionHandler is a handler for processing functions in a text. For every type of function separate function 
+    handler exists. As a result FunctionHandler returns FunctionFragment.
+* Fragment is a processed piece of text. There are two types of fragments:
     * TextFragment that contains information about text pieces without functions.
     * FunctionFragment that contains information about functions in text.
 
@@ -66,15 +66,15 @@ Step 0 - Creating ParserFactory
 
     ParserFactory factory = new DefaultParserFactory.Builder()
             .environment(Environment._7_BIT)
-            .textParser(new DefaultTextParser())
+            .textHandler(new DefaultTextHandler())
             .functionFinder(new DefaultFunctionFinder())
-            //if you don't need some types of functions just don't provide parsers for them
-            .functionParsers(
-                    new C0ControlFunctionParser(),
-                    new C1ControlFunctionParser(),
-                    new ControlSequenceParser(),
-                    new IndependentControlFunctionParser(),
-                    new ControlStringParser())
+            //if you don't need some types of functions just don't provide handlers for them
+            .functionHandlers(
+                    new C0ControlFunctionHandler(),
+                    new C1ControlFunctionHandler(),
+                    new ControlSequenceHandler(),
+                    new IndependentControlFunctionHandler(),
+                    new ControlStringHandler())
             .build();
 
 Step 1A - Creating StringParser
@@ -82,7 +82,7 @@ Step 1A - Creating StringParser
     //this is the text we are going to parse
     String text = ...;
 
-    //we need a parser, this is a light front-end
+    //we need a parser
     var parser = factory.createParser(text);
 
 Step 1B - Creating StreamParser
@@ -116,9 +116,9 @@ Step 2 - Parsing
 
 ### Thread-safety <a name="ansi4j-core-thread"></a>
 
-ParserFactory is thread-safe. StringParser (front-end) and StreamParser (front-end) are not thread-safe. At the same
-time TextParser(back-end) and FunctionParsers (back-end) are thread-safe. Detailed information about thread-safety is
-provided in every interface in core API module.
+ParserFactory is thread-safe. StringParser and StreamParser are not thread-safe. FunctionFinder, TextHandler and 
+FunctionHandlers are thread-safe. Detailed information about thread-safety is provided in every interface in core API 
+module.
 
 ## CSS extension <a name="ansi4j-css"></a>
 

@@ -23,12 +23,12 @@ import javax.annotation.concurrent.Immutable;
  * @author Pavel Kastornyy
  */
 @Immutable
-public interface TextParserResult extends FragmentParserResult {
+public interface FunctionHandlerResult extends FragmentHandlerResult {
 
     /**
      * Parsed fragment or empty optional.
      *
      * @return
      */
-    Optional<TextFragment> getFragment();
+    Optional<FunctionFragment> getFragment();
 }

@@ -22,6 +22,6 @@ import javax.annotation.concurrent.ThreadSafe;
  * @author Pavel Kastornyy
  */
 @ThreadSafe
-public interface FragmentParser extends Initializable {
+public interface FragmentHandler extends Initializable {
 
 }

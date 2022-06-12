@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansi4j.core.impl;
+package pk.ansi4j.core.api;
 
 import java.util.Optional;
-import pk.ansi4j.core.api.FunctionFailureReason;
-import pk.ansi4j.core.api.TextFragment;
-import pk.ansi4j.core.api.TextParserResult;
+import javax.annotation.concurrent.Immutable;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class TextParserResultImpl extends AbstractFragmentParserResult implements TextParserResult {
-
-    private final Optional<TextFragment> fragment;
-
-    public TextParserResultImpl(Optional<TextFragment> fragment, FunctionFailureReason failureReason) {
-        super(failureReason);
-        this.fragment = fragment;
-    }
+@Immutable
+public interface TextHandlerResult extends FragmentHandlerResult {
 
     /**
-     * {@inheritDoc}
+     * Parsed fragment or empty optional.
+     *
+     * @return
      */
-    @Override
-    public Optional<TextFragment> getFragment() {
-        return this.fragment;
-    }
-
+    Optional<TextFragment> getFragment();
 }

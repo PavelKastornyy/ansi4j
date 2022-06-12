@@ -23,14 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 import pk.ansi4j.core.api.Environment;
 import pk.ansi4j.core.api.FunctionFinder;
-import pk.ansi4j.core.api.FunctionParser;
 import pk.ansi4j.core.api.ParserFactory;
 import pk.ansi4j.core.api.StreamParser;
 import pk.ansi4j.core.api.StringParser;
-import pk.ansi4j.core.api.TextParser;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.impl.StreamParserImpl;
 import pk.ansi4j.core.impl.StringParserImpl;
+import pk.ansi4j.core.api.FunctionHandler;
+import pk.ansi4j.core.api.TextHandler;
 
 /**
  *
@@ -44,9 +44,9 @@ public class DefaultParserFactory implements ParserFactory {
 
         private FunctionFinder functionFinder;
 
-        private Map<FunctionType, FunctionParser> functionParsersByType = new HashMap<>();
+        private Map<FunctionType, FunctionHandler> functionHandlersByType = new HashMap<>();
 
-        private TextParser textParser;
+        private TextHandler textHandler;
 
         public Builder() {
             //empty constructor
@@ -62,13 +62,13 @@ public class DefaultParserFactory implements ParserFactory {
             return this;
         }
 
-        public Builder functionParsers(FunctionParser ... parsers) {
-            Arrays.asList(parsers).forEach(p -> this.functionParsersByType.put(p.getTargetFunctionType(), p));
+        public Builder functionHandlers(FunctionHandler ... handlers) {
+            Arrays.asList(handlers).forEach(p -> this.functionHandlersByType.put(p.getTargetFunctionType(), p));
             return this;
         }
 
-        public Builder textParser(TextParser parser) {
-            this.textParser = parser;
+        public Builder textHandler(TextHandler parser) {
+            this.textHandler = parser;
             return this;
         }
 
@@ -85,11 +85,11 @@ public class DefaultParserFactory implements ParserFactory {
             if (functionFinder == null) {
                 throw new IllegalStateException("No function finder");
             }
-            if (this.functionParsersByType.isEmpty()) {
-                throw new IllegalStateException("No function parsers");
+            if (this.functionHandlersByType.isEmpty()) {
+                throw new IllegalStateException("No function handlers");
             }
-            if (this.textParser == null) {
-                throw new IllegalStateException("No text parser");
+            if (this.textHandler == null) {
+                throw new IllegalStateException("No text handler");
             }
         }
     }
@@ -98,9 +98,9 @@ public class DefaultParserFactory implements ParserFactory {
 
     private final FunctionFinder functionFinder;
 
-    private final Map<FunctionType, FunctionParser> functionParsersByType;
+    private final Map<FunctionType, FunctionHandler> functionHandlersByType;
 
-    private final TextParser textParser;
+    private final TextHandler textHandler;
 
     /**
      * {@inheritDoc}
@@ -114,16 +114,16 @@ public class DefaultParserFactory implements ParserFactory {
      * {@inheritDoc}
      */
     @Override
-    public Map<FunctionType, FunctionParser> getFunctionParsersByType() {
-        return Collections.unmodifiableMap(this.functionParsersByType);
+    public Map<FunctionType, FunctionHandler> getFunctionHandlersByType() {
+        return Collections.unmodifiableMap(this.functionHandlersByType);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public TextParser getTextParser() {
-        return this.textParser;
+    public TextHandler getTextHandler() {
+        return this.textHandler;
     }
 
     /**
@@ -166,9 +166,9 @@ public class DefaultParserFactory implements ParserFactory {
         this.environment = builder.environment;
         this.functionFinder = builder.functionFinder;
         this.functionFinder.initialize(this.environment);
-        this.functionParsersByType = new HashMap(builder.functionParsersByType);
-        this.functionParsersByType.values().forEach(p -> p.initialize(this.environment));
-        this.textParser = builder.textParser;
-        this.textParser.initialize(this.environment);
+        this.functionHandlersByType = new HashMap(builder.functionHandlersByType);
+        this.functionHandlersByType.values().forEach(p -> p.initialize(this.environment));
+        this.textHandler = builder.textHandler;
+        this.textHandler.initialize(this.environment);
     }
 }

@@ -42,18 +42,18 @@ public interface ParserFactory {
     FunctionFinder getFunctionFinder();
 
     /**
-     * Returns thread-safe function parsers by type.
+     * Returns thread-safe function handlers by type.
      *
      * @return
      */
-    Map<FunctionType, FunctionParser> getFunctionParsersByType();
+    Map<FunctionType, FunctionHandler> getFunctionHandlersByType();
 
     /**
-     * Returns thread-safe text parser.
+     * Returns thread-safe text handler.
      *
      * @return
      */
-    TextParser getTextParser();
+    TextHandler getTextHandler();
 
     /**
      * Creates NOT thread-safe string parser that will use thread-safe components.

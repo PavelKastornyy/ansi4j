@@ -13,31 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package pk.ansi4j.core.iso6429;
+package pk.ansi4j.core;
 
+import java.util.Optional;
 import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FunctionParser;
+import pk.ansi4j.core.impl.TextFragmentImpl;
+import pk.ansi4j.core.impl.TextHandlerResultImpl;
+import pk.ansi4j.core.api.TextHandler;
+import pk.ansi4j.core.api.TextHandlerResult;
 
 /**
+ * Default implementation doesn't do any modifications with text and simply returns fragment with input text.
  *
  * @author Pavel Kastornyy
  */
-public abstract class AbstractFunctionParser implements FunctionParser {
+public class DefaultTextHandler implements TextHandler {
 
     private Environment environment;
 
     /**
-     * Functions checks if whole function is present in text.
-     * @param text
-     * @param endIndex
-     * @return
+     * {@inheritDoc}
      */
-    protected boolean isEndOfFunctionPresent(String text, int endIndex) {
-        if (endIndex > text.length()) {
-            return false;
-        } else {
-            return true;
-        }
+    @Override
+    public TextHandlerResult handle(String text, int currentIndex) {
+        return new TextHandlerResultImpl(Optional.of(new TextFragmentImpl(text, currentIndex)), null);
     }
 
     /**
@@ -48,7 +47,4 @@ public abstract class AbstractFunctionParser implements FunctionParser {
         this.environment = environment;
     }
 
-    protected Environment getEnvironment() {
-        return environment;
-    }
 }

@@ -25,7 +25,7 @@ import pk.ansi4j.core.api.iso6429.ControlFunction;
  * @author Pavel Kastornyy
  */
 @ThreadSafe
-public interface FunctionParser extends FragmentParser {
+public interface FunctionHandler extends FragmentHandler {
 
     /**
      * The type of the function this parser works with.
@@ -45,5 +45,5 @@ public interface FunctionParser extends FragmentParser {
      *
      * @return fragment parser result
      */
-    FunctionParserResult parse(String text, ControlFunction function, int currentIndex);
+    FunctionHandlerResult handle(String text, ControlFunction function, int currentIndex);
 }

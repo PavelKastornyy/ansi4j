@@ -15,21 +15,18 @@
  */
 package pk.ansi4j.core.impl;
 
-import java.util.Optional;
 import pk.ansi4j.core.api.FailureReason;
-import pk.ansi4j.core.api.Fragment;
-import pk.ansi4j.core.api.FragmentParserResult;
-import pk.ansi4j.core.api.FunctionFailureReason;
+import pk.ansi4j.core.api.FragmentHandlerResult;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-abstract class AbstractFragmentParserResult implements FragmentParserResult {
+abstract class AbstractFragmentHandlerResult implements FragmentHandlerResult {
 
     private final FailureReason failureReason;
 
-    public AbstractFragmentParserResult(FailureReason failureReason) {
+    public AbstractFragmentHandlerResult(FailureReason failureReason) {
         this.failureReason = failureReason;
     }
 

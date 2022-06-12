@@ -15,20 +15,24 @@
  */
 package pk.ansi4j.core.api;
 
-import java.util.Optional;
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 /**
+ * This parser can do any modification with text.
  *
  * @author Pavel Kastornyy
  */
-@Immutable
-public interface FragmentParserResult {
+@ThreadSafe
+public interface TextHandler extends FragmentHandler {
 
     /**
-     * The reason why fragment wasn't parsed.
+     * Parses text (string that doesn't contain functions).
+     *
+     * @param text is a piece of the whole text and doesn't have any functions.
+     * @param currentIndex index in the whole text (is equal to parsed text length). This parameter is required for
+     * calculating start and end index as they are relative to the whole text.
      *
      * @return
      */
-    FailureReason getFailureReason();
+    TextHandlerResult handle(String text, int currentIndex);
 }

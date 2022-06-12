@@ -17,46 +17,40 @@ package pk.ansi4j.core.iso6429;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import pk.ansi4j.core.api.Environment;
-import pk.ansi4j.core.api.FunctionFailureReason;
 import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
-import pk.ansi4j.core.api.FunctionParserResult;
+import pk.ansi4j.core.api.FunctionFailureReason;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
-import pk.ansi4j.core.impl.FunctionParserResultImpl;
+import pk.ansi4j.core.impl.FunctionHandlerResultImpl;
+import pk.ansi4j.core.api.FunctionHandlerResult;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class C1ControlFunctionParser extends AbstractFunctionParser {
+public class IndependentControlFunctionHandler extends AbstractFunctionHandler {
 
     /**
      * {@inheritDoc}
      */
     @Override
     public FunctionType getTargetFunctionType() {
-        return ControlFunctionType.C1_SET;
+        return ControlFunctionType.INDEPENDENT_FUNCTION;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
+    public FunctionHandlerResult handle(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
-        int endIndex;
-        if (this.getEnvironment() == Environment._7_BIT) {
-            endIndex = startIndex + 2;
-        } else {
-            endIndex = startIndex + 1;
-        }
+        int endIndex = startIndex + 2;
         if (!isEndOfFunctionPresent(text, endIndex)) {
-            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
+            return new FunctionHandlerResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
         }
         var functionText = text.substring(startIndex, endIndex);
-        return new FunctionParserResultImpl(Optional.of(
+        return new FunctionHandlerResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
     }
 }

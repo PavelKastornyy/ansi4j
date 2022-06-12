@@ -26,16 +26,16 @@ import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.function.impl.FunctionArgumentImpl;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
 import pk.ansi4j.core.api.FunctionFailureReason;
-import pk.ansi4j.core.api.FunctionParserResult;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
-import pk.ansi4j.core.impl.FunctionParserResultImpl;
+import pk.ansi4j.core.impl.FunctionHandlerResultImpl;
+import pk.ansi4j.core.api.FunctionHandlerResult;
 
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class ControlStringParser extends AbstractFunctionParser {
+public class ControlStringHandler extends AbstractFunctionHandler {
 
     /**
      * {@inheritDoc}
@@ -49,7 +49,7 @@ public class ControlStringParser extends AbstractFunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
+    public FunctionHandlerResult handle(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
         String openingDelimiter = null;
         String terminatingTerminator = null;
@@ -62,7 +62,7 @@ public class ControlStringParser extends AbstractFunctionParser {
         }
         int endIndex = text.indexOf(terminatingTerminator, startIndex);
         if (endIndex == -1) {
-            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
+            return new FunctionHandlerResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
         }
         endIndex += terminatingTerminator.length();
         var functionText = text.substring(startIndex, endIndex);
@@ -78,7 +78,7 @@ public class ControlStringParser extends AbstractFunctionParser {
             var argument = new FunctionArgumentImpl(argumentString, false);
             arguments.add(argument);
         }
-        return new FunctionParserResultImpl(Optional.of(
+        return new FunctionHandlerResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, arguments)), null);
     }
 }

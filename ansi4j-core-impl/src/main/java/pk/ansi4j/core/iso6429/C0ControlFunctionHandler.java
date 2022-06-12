@@ -21,15 +21,15 @@ import pk.ansi4j.core.api.function.FunctionType;
 import pk.ansi4j.core.api.iso6429.ControlFunctionType;
 import pk.ansi4j.core.impl.FunctionFragmentImpl;
 import pk.ansi4j.core.api.FunctionFailureReason;
-import pk.ansi4j.core.api.FunctionParserResult;
 import pk.ansi4j.core.api.iso6429.ControlFunction;
-import pk.ansi4j.core.impl.FunctionParserResultImpl;
+import pk.ansi4j.core.impl.FunctionHandlerResultImpl;
+import pk.ansi4j.core.api.FunctionHandlerResult;
 
 /**
  *
  * @author Pavel Kastornyy
  */
-public class C0ControlFunctionParser extends AbstractFunctionParser {
+public class C0ControlFunctionHandler extends AbstractFunctionHandler {
 
     /**
      * {@inheritDoc}
@@ -43,14 +43,14 @@ public class C0ControlFunctionParser extends AbstractFunctionParser {
      * {@inheritDoc}
      */
     @Override
-    public FunctionParserResult parse(String text, ControlFunction function, int currentIndex) {
+    public FunctionHandlerResult handle(String text, ControlFunction function, int currentIndex) {
         var startIndex = 0;
         int endIndex = startIndex + 1;
         if (!isEndOfFunctionPresent(text, endIndex)) {
-            return new FunctionParserResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
+            return new FunctionHandlerResultImpl(Optional.empty(), FunctionFailureReason.NO_END_OF_FUNCTION);
         }
         var functionText = text.substring(startIndex, endIndex);
-        return new FunctionParserResultImpl(Optional.of(
+        return new FunctionHandlerResultImpl(Optional.of(
                 new FunctionFragmentImpl(functionText, currentIndex, function, new ArrayList<>())), null);
     }
 }
