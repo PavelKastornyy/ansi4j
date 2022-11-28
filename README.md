@@ -1,3 +1,4 @@
+**Important** I will work at the next version (ver.2) only if project has 50 stars. So, if you need it star the project!
 # Table of contents
 * [ANSI4J](#ansi4j)
     * [Core](#ansi4j-core)
@@ -212,8 +213,6 @@ To build the library use standard Git and Maven commands:
     git clone https://github.com/PavelKastornyy/ansi4j.git
     cd ansi4j
     mvn clean install
-
-Don't forget to star the project!
 
 ## License <a name="ansi4j-license"></a>
 
