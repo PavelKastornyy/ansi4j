@@ -1,4 +1,4 @@
-**Important** I will work at the next version (ver.2) only if project has 50 stars. So, if you need it star the project!
+**Important!** I will work at the next version (ver.2) only if project has 50 stars. So, if you need it star the project!
 # Table of contents
 * [ANSI4J](#ansi4j)
     * [Core](#ansi4j-core)
