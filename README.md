@@ -3,10 +3,12 @@
 * [ANSI4J](#ansi4j)
     * [Core](#ansi4j-core)
         * [Overview](#ansi4j-core-overview)
+        * [Dependencies](#ansi4j-core-dependencies)
         * [Usage](#ansi4j-core-usage)
         * [Thread-safety](#ansi4j-core-thread)
     * [CSS extension](#ansi4j-css)
         * [Overview](#ansi4j-css-overview)
+        * [Dependencies](#ansi4j-css-dependencies)
         * [Usage](#ansi4j-css-usage)
         * [Thread-safety](#ansi4j-css-thread)
         * [Example](#ansi4j-css-example)
@@ -60,6 +62,42 @@ There are two types of parsers:
     * `TextFragment` that contains information about text pieces without functions.
     * `FunctionFragment` that contains information about functions in text.
 
+### Dependencies <a name="ansi4j-core-dependencies"></a>
+
+You can use dependencies either from your local maven repo (after [code building](#ansi4j-building)) or from [JitPack](https://jitpack.io/#PavelKastornyy/ansi4j) maven repo.
+
+Using local maven repo:
+
+    <dependency>
+        <groupId>pk.ansi4j</groupId>
+        <artifactId>ansi4j-core-api</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>pk.ansi4j</groupId>
+        <artifactId>ansi4j-core-impl</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+
+Using JitPack maven repo:
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    ...
+    <dependency>
+        <groupId>com.github.PavelKastornyy.ansi4j</groupId>
+        <artifactId>ansi4j-core-api</artifactId>
+        <version>ansi4j-1.1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.github.PavelKastornyy.ansi4j</groupId>
+        <artifactId>ansi4j-core-impl</artifactId>
+        <version>ansi4j-1.1.0</version>
+    </dependency>    
 
 ### Usage <a name="ansi4j-core-usage"></a>
 
@@ -151,6 +189,43 @@ generators: CSS3 generator and JavaFX CSS generator. The latter one is used when
 for JavaFX nodes.
 
 Such architecture allows easily to create new attribute types and resolvers with CSS generators for them.
+
+### Dependencies <a name="ansi4j-css-dependencies"></a>
+
+You can use dependencies either from your local maven repo (after [code building](#ansi4j-building)) or from [JitPack](https://jitpack.io/#PavelKastornyy/ansi4j) maven repo.
+
+Using local maven repo:
+
+    <dependency>
+        <groupId>pk.ansi4j</groupId>
+        <artifactId>ansi4j-css-api</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>pk.ansi4j</groupId>
+        <artifactId>ansi4j-css-impl</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+
+Using JitPack maven repo:
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    ...
+    <dependency>
+        <groupId>com.github.PavelKastornyy.ansi4j</groupId>
+        <artifactId>ansi4j-css-api</artifactId>
+        <version>ansi4j-1.1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.github.PavelKastornyy.ansi4j</groupId>
+        <artifactId>ansi4j-css-impl</artifactId>
+        <version>ansi4j-1.1.0</version>
+    </dependency>
 
 ### Usage <a name="ansi4j-css-usage"></a>
 
